@@ -279,7 +279,6 @@ def download_nltk_resources():
         os.makedirs(nltk_data_dir)
     if nltk_data_dir not in nltk.data.path:
         nltk.data.path.append(nltk_data_dir)
-    st.write("NLTK data path:", nltk.data.path)
     
     resources = ['vader_lexicon', 'punkt', 'stopwords', 'wordnet']
     for resource in resources:
@@ -288,10 +287,6 @@ def download_nltk_resources():
         except Exception as e:
             st.error(f"Error downloading NLTK resource {resource}: {e}")
             return False
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except LookupError:
-        st.error("El recurso 'punkt' no se encontró después de la descarga.")
     return True
 
 def preprocess_text(text, custom_stopwords=None):
