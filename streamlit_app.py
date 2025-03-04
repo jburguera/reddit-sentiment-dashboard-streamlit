@@ -274,24 +274,28 @@ def detect_sentiment_trend(df_comments, window_size=3):
 # --- NLP Functions ---
 @st.cache_data(ttl=3600, show_spinner=False)
 def download_nltk_resources():
-    nltk_data_dir = '/tmp/nltk_data'
-    if not os.path.exists(nltk_data_dir):
-        os.makedirs(nltk_data_dir)
-    if nltk_data_dir not in nltk.data.path:
-        nltk.data.path.append(nltk_data_dir)
+    nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')  
+    os.makedirs(nltk_data_dir, exist_ok=True)
+    
+    # Explicitly set NLTK data path
+    nltk.data.path.clear()
+    nltk.data.path.append(nltk_data_dir)
     
     resources = ['vader_lexicon', 'punkt', 'stopwords', 'wordnet']
     for resource in resources:
         try:
             nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
+            # Verify download
+            if resource == 'punkt':
+                nltk.data.find(f'tokenizers/{resource}')
         except Exception as e:
-            st.error(f"Error downloading NLTK resource {resource}: {e}")
+            st.error(f"Error downloading {resource}: {str(e)}")
             return False
     return True
 
 def preprocess_text(text, custom_stopwords=None):
     """Preprocess text for NLP tasks."""
-    if not isinstance(text, str):
+    if not isinstance(text, str) or len(text.strip()) == 0:
         return []
     
     # Convert to lowercase
