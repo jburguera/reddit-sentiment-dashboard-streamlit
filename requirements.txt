@@ -1,0 +1,11 @@
+streamlit>=1.22.0
+matplotlib
+seaborn
+pandas
+praw
+nltk>=3.7
+wordcloud
+gensim
+pyLDAvis
+plotly
+Pillow
