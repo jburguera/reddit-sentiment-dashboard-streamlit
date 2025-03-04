@@ -1,6 +1,0 @@
-streamlit
-pandas
-nltk
-matplotlib
-seaborn
-praw
