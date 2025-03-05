@@ -278,7 +278,7 @@ def download_nltk_resources():
     os.makedirs(nltk_data_dir, exist_ok=True)
     
     # Explicitly set NLTK data path
-    nltk.data.path.clear()
+    if nltk_data_dir not in nltk.data.path:
     nltk.data.path.append(nltk_data_dir)
     
     resources = ['vader_lexicon', 'punkt', 'stopwords', 'wordnet']
@@ -287,7 +287,7 @@ def download_nltk_resources():
             nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
             # Verify download
             if resource == 'punkt':
-                nltk.data.find(f'tokenizers/{resource}')
+                nltk.data.find('tokenizers/punkt/english.pickle')
         except Exception as e:
             st.error(f"Error downloading {resource}: {str(e)}")
             return False
