@@ -279,7 +279,7 @@ def download_nltk_resources():
     
     # Explicitly set NLTK data path
     if nltk_data_dir not in nltk.data.path:
-    nltk.data.path.append(nltk_data_dir)
+        nltk.data.path.append(nltk_data_dir)
     
     resources = ['vader_lexicon', 'punkt', 'stopwords', 'wordnet']
     for resource in resources:
