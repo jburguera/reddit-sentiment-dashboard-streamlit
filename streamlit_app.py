@@ -288,6 +288,8 @@ def download_nltk_resources():
             # Verify download
             if resource == 'punkt':
                 nltk.data.find('tokenizers/punkt/english.pickle')
+        except LookupError:
+                nltk.data.find('tokenizers/punkt_tab/english/')
         except Exception as e:
             st.error(f"Error downloading {resource}: {str(e)}")
             return False
