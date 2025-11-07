@@ -287,9 +287,13 @@ def download_nltk_resources():
             nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
             # Verify download
             if resource == 'punkt':
-                nltk.data.find('tokenizers/punkt/english.pickle')
-        except LookupError:
-                nltk.data.find('tokenizers/punkt_tab/english/')
+                try:
+                    nltk.data.find('tokenizers/punkt/english.pickle')
+                except LookupError:
+                    try:
+                        nltk.data.find('tokenizers/punkt_tab/english/')
+                    except LookupError:
+                        pass  # Will work with the downloaded version
         except Exception as e:
             st.error(f"Error downloading {resource}: {str(e)}")
             return False
@@ -845,8 +849,8 @@ if df_posts is None or df_comments is None or len(df_comments) == 0:
 # --- Create summary metrics ---
 sentiment_summary = create_sentiment_summary(df_comments)
 
-# Display summary metrics
-col1, col2, col3, col4 = st.columns(4)
+# Display summary metrics with trend indicators
+col1, col2, col3, col4, col5 = st.columns(5)
 
 with col1:
     st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -874,8 +878,26 @@ with col4:
     st.markdown('<p class="metric-label">Negative Comments</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
+with col5:
+    if isinstance(sentiment_trend_info, dict):
+        trend_emoji = "📈" if sentiment_trend_info['trend'] == "Up" else ("📉" if sentiment_trend_info['trend'] == "Down" else "➡️")
+        trend_color = "#1E8449" if sentiment_trend_info['trend'] == "Up" else ("#C0392B" if sentiment_trend_info['trend'] == "Down" else "#707B7C")
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown(f'<p class="metric-value" style="color:{trend_color}">{trend_emoji} {sentiment_trend_info["trend"]}</p>', unsafe_allow_html=True)
+        st.markdown('<p class="metric-label">Sentiment Trend</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown('<p class="metric-value">N/A</p>', unsafe_allow_html=True)
+        st.markdown('<p class="metric-label">Sentiment Trend</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# Show trend insight
+if isinstance(sentiment_trend_info, dict):
+    st.info(f"📊 Trend Insight: {sentiment_trend_info['description']}")
+
 # --- Visualization Tabs ---
-tabs = st.tabs(["Sentiment Distribution", "Temporal Analysis", "Top Posts", "Word Analysis"])
+tabs = st.tabs(["Sentiment Distribution", "Temporal Analysis", "Top Posts", "Word Analysis", "Data Export & Insights"])
 
 # Tab 1: Sentiment Distribution
 with tabs[0]:
@@ -1109,18 +1131,454 @@ with tabs[2]:
 # Tab 4: Word Analysis
 with tabs[3]:
     st.markdown('<p class="subheader">Word Analysis</p>', unsafe_allow_html=True)
-    st.markdown("""
-    This tab would typically contain word clouds, frequency analysis, and topic modeling.
-    These features require additional NLP libraries like NLTK's tokenizers and stopwords.
-    
-    For a complete implementation, consider adding:
-    - Word clouds by sentiment category
-    - Frequency analysis of most common terms
-    - Topic modeling to identify main discussion themes
-    - Named entity recognition for key products/people mentioned
-    """)
-    
-    st.info("To implement these features, you would need to add code to download additional NLTK resources and use libraries like WordCloud and Gensim.")
+
+    # Prepare token data for analysis
+    df_comments['tokens_list'] = df_comments['tokens'].apply(
+        lambda x: eval(x) if isinstance(x, str) and x.startswith('[') else []
+    )
+
+    # Word Clouds by Sentiment
+    st.markdown("### Word Clouds by Sentiment Category")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("#### Positive Comments")
+        positive_comments = df_comments[df_comments['sentiment_category'] == 'Positive']
+        if len(positive_comments) > 0:
+            positive_tokens = positive_comments['tokens_list'].tolist()
+            try:
+                fig_positive = create_wordcloud(positive_tokens, "Positive", wordcloud_positive_cmap)
+                st.pyplot(fig_positive)
+                plt.close(fig_positive)
+            except Exception as e:
+                st.warning(f"Not enough positive words to generate word cloud: {str(e)}")
+        else:
+            st.info("No positive comments to analyze")
+
+    with col2:
+        st.markdown("#### Neutral Comments")
+        neutral_comments = df_comments[df_comments['sentiment_category'] == 'Neutral']
+        if len(neutral_comments) > 0:
+            neutral_tokens = neutral_comments['tokens_list'].tolist()
+            try:
+                fig_neutral = create_wordcloud(neutral_tokens, "Neutral", wordcloud_neutral_cmap)
+                st.pyplot(fig_neutral)
+                plt.close(fig_neutral)
+            except Exception as e:
+                st.warning(f"Not enough neutral words to generate word cloud: {str(e)}")
+        else:
+            st.info("No neutral comments to analyze")
+
+    with col3:
+        st.markdown("#### Negative Comments")
+        negative_comments = df_comments[df_comments['sentiment_category'] == 'Negative']
+        if len(negative_comments) > 0:
+            negative_tokens = negative_comments['tokens_list'].tolist()
+            try:
+                fig_negative = create_wordcloud(negative_tokens, "Negative", wordcloud_negative_cmap)
+                st.pyplot(fig_negative)
+                plt.close(fig_negative)
+            except Exception as e:
+                st.warning(f"Not enough negative words to generate word cloud: {str(e)}")
+        else:
+            st.info("No negative comments to analyze")
+
+    st.markdown("---")
+
+    # Word Frequency Analysis
+    st.markdown("### Top Words by Sentiment Category")
+
+    # Calculate word frequencies
+    from collections import Counter
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("#### Most Common in Positive")
+        if len(positive_comments) > 0:
+            all_positive_words = [word for tokens in positive_comments['tokens_list'] for word in tokens]
+            positive_freq = Counter(all_positive_words).most_common(15)
+
+            if positive_freq:
+                freq_df = pd.DataFrame(positive_freq, columns=['Word', 'Frequency'])
+                fig_pos_bar = px.bar(
+                    freq_df,
+                    x='Frequency',
+                    y='Word',
+                    orientation='h',
+                    color_discrete_sequence=[color_positive or '#1E8449']
+                )
+                fig_pos_bar.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    height=400,
+                    margin=dict(l=10, r=10, t=30, b=10)
+                )
+                st.plotly_chart(fig_pos_bar, use_container_width=True)
+
+    with col2:
+        st.markdown("#### Most Common in Neutral")
+        if len(neutral_comments) > 0:
+            all_neutral_words = [word for tokens in neutral_comments['tokens_list'] for word in tokens]
+            neutral_freq = Counter(all_neutral_words).most_common(15)
+
+            if neutral_freq:
+                freq_df = pd.DataFrame(neutral_freq, columns=['Word', 'Frequency'])
+                fig_neu_bar = px.bar(
+                    freq_df,
+                    x='Frequency',
+                    y='Word',
+                    orientation='h',
+                    color_discrete_sequence=[color_neutral or '#707B7C']
+                )
+                fig_neu_bar.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    height=400,
+                    margin=dict(l=10, r=10, t=30, b=10)
+                )
+                st.plotly_chart(fig_neu_bar, use_container_width=True)
+
+    with col3:
+        st.markdown("#### Most Common in Negative")
+        if len(negative_comments) > 0:
+            all_negative_words = [word for tokens in negative_comments['tokens_list'] for word in tokens]
+            negative_freq = Counter(all_negative_words).most_common(15)
+
+            if negative_freq:
+                freq_df = pd.DataFrame(negative_freq, columns=['Word', 'Frequency'])
+                fig_neg_bar = px.bar(
+                    freq_df,
+                    x='Frequency',
+                    y='Word',
+                    orientation='h',
+                    color_discrete_sequence=[color_negative or '#C0392B']
+                )
+                fig_neg_bar.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    height=400,
+                    margin=dict(l=10, r=10, t=30, b=10)
+                )
+                st.plotly_chart(fig_neg_bar, use_container_width=True)
+
+    st.markdown("---")
+
+    # Topic Modeling
+    st.markdown("### Topic Modeling Analysis")
+    st.markdown("Discover the main themes and topics discussed in the comments using Latent Dirichlet Allocation (LDA).")
+
+    with st.spinner("Building topic model... This may take a moment."):
+        # Filter out empty token lists
+        valid_documents = [tokens for tokens in df_comments['tokens_list'] if len(tokens) > 0]
+
+        if len(valid_documents) >= 10:  # Need minimum documents for LDA
+            try:
+                lda_results = build_lda_model(valid_documents, num_topics=num_topics)
+                topic_viz = get_topic_visualizations(lda_results, top_n_words=10)
+
+                # Display coherence score
+                st.metric(
+                    "Model Coherence Score",
+                    f"{topic_viz['coherence_score']:.3f}",
+                    help="Coherence score measures how interpretable the topics are. Higher is better (typically 0.4-0.7 is good)."
+                )
+
+                # Display topics
+                st.markdown("#### Discovered Topics")
+
+                topic_cols = st.columns(min(3, num_topics))
+                for idx, topic in enumerate(topic_viz['topics']):
+                    with topic_cols[idx % 3]:
+                        st.markdown(f"**Topic {topic['id'] + 1}**")
+                        st.write(", ".join(topic['words'][:8]))
+
+                # Interactive visualization
+                st.markdown("#### Interactive Topic Visualization")
+                st.markdown("Explore topics interactively. Click on topics to see their top terms and relationships.")
+
+                # Display pyLDAvis visualization
+                st.components.v1.html(topic_viz['html'], height=800, scrolling=True)
+
+            except Exception as e:
+                st.error(f"Error building topic model: {str(e)}")
+                st.info("Try adjusting the number of topics in the sidebar or fetching more data.")
+        else:
+            st.warning(f"Not enough valid documents for topic modeling. Found {len(valid_documents)} documents, need at least 10. Try fetching more posts or reducing minimum comments filter.")
+
+# Tab 5: Data Export & Insights
+with tabs[4]:
+    st.markdown('<p class="subheader">Data Export & Advanced Insights</p>', unsafe_allow_html=True)
+
+    # Sentiment Trend Analysis
+    st.markdown("### Sentiment Trend Analysis")
+
+    if isinstance(sentiment_trend_info, dict):
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            trend_color = "#1E8449" if sentiment_trend_info['trend'] == "Up" else ("#C0392B" if sentiment_trend_info['trend'] == "Down" else "#707B7C")
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown(f'<p class="metric-value" style="color:{trend_color}">{sentiment_trend_info["trend"]}</p>', unsafe_allow_html=True)
+            st.markdown('<p class="metric-label">Sentiment Trend</p>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col2:
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            change_color = "#1E8449" if sentiment_trend_info['latest_change'] > 0 else ("#C0392B" if sentiment_trend_info['latest_change'] < 0 else "#707B7C")
+            st.markdown(f'<p class="metric-value" style="color:{change_color}">{sentiment_trend_info["latest_change"]:.1f}%</p>', unsafe_allow_html=True)
+            st.markdown('<p class="metric-label">Recent Change</p>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        with col3:
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            value_color = "#1E8449" if sentiment_trend_info['latest_value'] > 0.05 else ("#C0392B" if sentiment_trend_info['latest_value'] < -0.05 else "#707B7C")
+            st.markdown(f'<p class="metric-value" style="color:{value_color}">{sentiment_trend_info["latest_value"]:.3f}</p>', unsafe_allow_html=True)
+            st.markdown('<p class="metric-label">Current Sentiment Score</p>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        st.info(sentiment_trend_info['description'])
+    else:
+        st.warning(sentiment_trend_info)
+
+    st.markdown("---")
+
+    # Statistical Summary
+    st.markdown("### Statistical Summary")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("#### Sentiment Score Statistics")
+        sentiment_stats = df_comments['vader_compound'].describe()
+        stats_df = pd.DataFrame({
+            'Statistic': ['Count', 'Mean', 'Std Dev', 'Min', '25%', '50% (Median)', '75%', 'Max'],
+            'Value': [
+                f"{sentiment_stats['count']:.0f}",
+                f"{sentiment_stats['mean']:.4f}",
+                f"{sentiment_stats['std']:.4f}",
+                f"{sentiment_stats['min']:.4f}",
+                f"{sentiment_stats['25%']:.4f}",
+                f"{sentiment_stats['50%']:.4f}",
+                f"{sentiment_stats['75%']:.4f}",
+                f"{sentiment_stats['max']:.4f}"
+            ]
+        })
+        st.dataframe(stats_df, hide_index=True, use_container_width=True)
+
+    with col2:
+        st.markdown("#### Comment Activity Statistics")
+
+        # Calculate additional metrics
+        avg_score = df_comments['comment_score'].mean()
+        total_posts = len(df_posts)
+        avg_comments_per_post = len(df_comments) / total_posts if total_posts > 0 else 0
+
+        # Date range
+        date_range = df_comments['comment_date'].max() - df_comments['comment_date'].min()
+
+        activity_df = pd.DataFrame({
+            'Metric': [
+                'Total Posts Analyzed',
+                'Avg Comments per Post',
+                'Avg Comment Score',
+                'Date Range (days)',
+                'Most Active Day'
+            ],
+            'Value': [
+                f"{total_posts}",
+                f"{avg_comments_per_post:.1f}",
+                f"{avg_score:.1f}",
+                f"{date_range.days}",
+                f"{df_comments.groupby('comment_date').size().idxmax()}"
+            ]
+        })
+        st.dataframe(activity_df, hide_index=True, use_container_width=True)
+
+    st.markdown("---")
+
+    # Correlation Analysis
+    st.markdown("### Correlation Analysis")
+    st.markdown("Explore relationships between different metrics")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        # Sentiment vs Comment Score
+        fig_corr1 = px.scatter(
+            df_comments,
+            x='comment_score',
+            y='vader_compound',
+            color='sentiment_category',
+            color_discrete_map={
+                'Positive': color_positive or '#1E8449',
+                'Neutral': color_neutral or '#707B7C',
+                'Negative': color_negative or '#C0392B'
+            },
+            title="Sentiment vs Comment Score",
+            trendline="lowess",
+            opacity=0.6
+        )
+        fig_corr1.update_layout(
+            xaxis_title="Comment Score (Upvotes)",
+            yaxis_title="Sentiment Score",
+            height=400
+        )
+        st.plotly_chart(fig_corr1, use_container_width=True)
+
+        # Calculate correlation
+        corr_score_sentiment = df_comments['comment_score'].corr(df_comments['vader_compound'])
+        st.metric("Correlation Coefficient", f"{corr_score_sentiment:.3f}",
+                 help="Pearson correlation between comment score and sentiment (-1 to 1)")
+
+    with col2:
+        # Average sentiment by post engagement
+        post_engagement = df_comments.groupby('post_id').agg({
+            'vader_compound': 'mean',
+            'comment_id': 'count'
+        }).reset_index()
+        post_engagement.columns = ['Post ID', 'Avg Sentiment', 'Comment Count']
+
+        fig_corr2 = px.scatter(
+            post_engagement,
+            x='Comment Count',
+            y='Avg Sentiment',
+            title="Post Engagement vs Average Sentiment",
+            trendline="lowess",
+            color='Avg Sentiment',
+            color_continuous_scale='RdBu',
+            color_continuous_midpoint=0,
+            opacity=0.7
+        )
+        fig_corr2.update_layout(
+            xaxis_title="Number of Comments",
+            yaxis_title="Average Sentiment Score",
+            height=400
+        )
+        st.plotly_chart(fig_corr2, use_container_width=True)
+
+        corr_engagement_sentiment = post_engagement['Comment Count'].corr(post_engagement['Avg Sentiment'])
+        st.metric("Correlation Coefficient", f"{corr_engagement_sentiment:.3f}",
+                 help="Pearson correlation between post engagement and sentiment (-1 to 1)")
+
+    st.markdown("---")
+
+    # Data Export Section
+    st.markdown("### Export Data")
+    st.markdown("Download the analyzed data in various formats for further analysis.")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("#### Comments Data")
+        # Prepare clean export dataframe
+        export_df_comments = df_comments[[
+            'comment_id', 'comment_text', 'comment_author', 'comment_score',
+            'comment_datetime', 'vader_compound', 'sentiment_category',
+            'post_id', 'post_title'
+        ]].copy()
+
+        csv_comments = export_df_comments.to_csv(index=False)
+        st.download_button(
+            label="Download Comments CSV",
+            data=csv_comments,
+            file_name=f"tesla_sentiment_comments_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+            mime="text/csv",
+            help="Download all analyzed comments with sentiment scores"
+        )
+
+    with col2:
+        st.markdown("#### Posts Data")
+        export_df_posts = df_posts[[
+            'post_id', 'post_title', 'post_url', 'post_score',
+            'post_upvote_ratio', 'post_num_comments', 'post_author'
+        ]].copy()
+
+        csv_posts = export_df_posts.to_csv(index=False)
+        st.download_button(
+            label="Download Posts CSV",
+            data=csv_posts,
+            file_name=f"tesla_sentiment_posts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+            mime="text/csv",
+            help="Download all posts metadata"
+        )
+
+    with col3:
+        st.markdown("#### Summary Report")
+
+        # Create comprehensive summary
+        summary_report = {
+            "report_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "subreddit": subreddit_name,
+            "data_collection": {
+                "total_posts": int(len(df_posts)),
+                "total_comments": int(len(df_comments)),
+                "date_range_start": str(df_comments['comment_date'].min()),
+                "date_range_end": str(df_comments['comment_date'].max())
+            },
+            "sentiment_summary": {
+                "average_sentiment": float(sentiment_summary['avg_compound']),
+                "positive_percentage": float(sentiment_summary['positive_pct']),
+                "neutral_percentage": float(sentiment_summary['neutral_pct']),
+                "negative_percentage": float(sentiment_summary['negative_pct'])
+            },
+            "sentiment_trend": sentiment_trend_info if isinstance(sentiment_trend_info, dict) else str(sentiment_trend_info),
+            "statistics": {
+                "mean": float(sentiment_stats['mean']),
+                "median": float(sentiment_stats['50%']),
+                "std_dev": float(sentiment_stats['std']),
+                "min": float(sentiment_stats['min']),
+                "max": float(sentiment_stats['max'])
+            },
+            "correlations": {
+                "sentiment_vs_score": float(corr_score_sentiment),
+                "engagement_vs_sentiment": float(corr_engagement_sentiment)
+            }
+        }
+
+        json_report = json.dumps(summary_report, indent=2)
+        st.download_button(
+            label="Download JSON Report",
+            data=json_report,
+            file_name=f"tesla_sentiment_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+            mime="application/json",
+            help="Download comprehensive analysis report in JSON format"
+        )
+
+    st.markdown("---")
+
+    # Raw Data Preview
+    st.markdown("### Data Preview")
+
+    preview_option = st.selectbox(
+        "Select data to preview:",
+        ["Comments with Sentiment", "Posts Summary", "Sentiment by Date"]
+    )
+
+    if preview_option == "Comments with Sentiment":
+        st.dataframe(
+            export_df_comments.head(100),
+            use_container_width=True,
+            hide_index=True
+        )
+    elif preview_option == "Posts Summary":
+        st.dataframe(
+            post_sentiment[[
+                'Post Title', 'Avg Sentiment', 'sentiment_category',
+                'Comment Count', 'post_score', 'post_upvote_ratio'
+            ]].head(50),
+            use_container_width=True,
+            hide_index=True
+        )
+    else:  # Sentiment by Date
+        sentiment_by_date_detailed = df_comments.groupby('comment_date').agg({
+            'vader_compound': ['mean', 'std', 'count'],
+            'sentiment_category': lambda x: (x == 'Positive').sum() / len(x) * 100
+        }).reset_index()
+        sentiment_by_date_detailed.columns = ['Date', 'Avg Sentiment', 'Std Dev', 'Comment Count', 'Positive %']
+        st.dataframe(
+            sentiment_by_date_detailed,
+            use_container_width=True,
+            hide_index=True
+        )
 
 # --- Footer ---
 st.markdown("---")
