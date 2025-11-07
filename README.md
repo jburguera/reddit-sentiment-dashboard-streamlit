@@ -284,7 +284,7 @@ Potential features for future versions:
 
 ## Screenshots
 
-(Add screenshots of your dashboard here)
+
 
 ## Contact
 
