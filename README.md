@@ -8,7 +8,7 @@ A comprehensive, interactive dashboard for analyzing sentiment towards Tesla on 
 
 ## Features
 
-### 🎯 Core Functionality
+### Core Functionality
 
 - **Real-time Reddit Data Collection**: Fetches posts and comments from any subreddit (default: r/TeslaMotors)
 - **VADER Sentiment Analysis**: Uses NLTK's VADER for accurate sentiment scoring
@@ -18,7 +18,7 @@ A comprehensive, interactive dashboard for analyzing sentiment towards Tesla on 
 - **Trend Detection**: Automatic detection of sentiment trends over time
 - **Data Export**: Export analyzed data in CSV and JSON formats
 
-### 📊 Dashboard Sections
+### Dashboard Sections
 
 #### 1. Sentiment Distribution
 - Pie chart showing distribution of positive/neutral/negative comments
@@ -58,7 +58,7 @@ A comprehensive, interactive dashboard for analyzing sentiment towards Tesla on 
   - JSON report with comprehensive analytics
 - **Data Preview**: Browse comments, posts, and aggregated data
 
-### 🎨 Customization Options
+### Customization Options
 
 - **Subreddit Selection**: Analyze any subreddit
 - **Post Filtering**: Adjust number of posts (50-500) and minimum comments
@@ -68,7 +68,7 @@ A comprehensive, interactive dashboard for analyzing sentiment towards Tesla on 
 - **Topic Count**: Configurable topic modeling (2-10 topics)
 - **Auto-Refresh**: Automatic data updates (30 min to 24 hours)
 
-### ✨ Enhanced Features
+### Enhanced Features
 
 - **Splash Screen**: Beautiful loading screen on first launch
 - **Progress Tracking**: Real-time progress bars for data fetching and analysis
