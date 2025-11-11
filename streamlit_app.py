@@ -54,28 +54,19 @@ def ensure_nltk_resource(resource_name, resource_path):
             return False
 
 # Download all required resources with verification
+# Note: We don't need punkt/punkt_tab anymore since we use simple tokenization
 resources_to_download = [
-    ('punkt_tab', 'tokenizers/punkt_tab/english/'),
     ('vader_lexicon', 'sentiment/vader_lexicon.zip'),
     ('stopwords', 'corpora/stopwords'),
     ('wordnet', 'corpora/wordnet'),
     ('omw-1.4', 'corpora/omw-1.4'),
-    ('averaged_perceptron_tagger', 'taggers/averaged_perceptron_tagger')
 ]
 
 for resource_name, resource_path in resources_to_download:
     ensure_nltk_resource(resource_name, resource_path)
 
-# Try punkt as fallback if punkt_tab didn't work
-try:
-    nltk.data.find('tokenizers/punkt_tab/english/')
-except LookupError:
-    print("punkt_tab not found, trying punkt...", file=sys.stderr)
-    ensure_nltk_resource('punkt', 'tokenizers/punkt/english.pickle')
-
 # Now import NLTK modules after resources are downloaded
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from wordcloud import WordCloud
@@ -337,13 +328,10 @@ def preprocess_text(text, custom_stopwords=None):
     text = re.sub(r'&amp;', '&', text)  # Replace HTML entities
     text = re.sub(r'[^a-zA-Z\s]', '', text)  # Keep only letters and spaces
 
-    # Tokenize - use preserve_line=True to avoid punkt dependency
-    # This is more robust for Streamlit Cloud deployment
-    try:
-        tokens = word_tokenize(text, preserve_line=True)
-    except:
-        # Fallback to simple tokenization if NLTK fails
-        tokens = text.split()
+    # Tokenize - use simple split() instead of NLTK word_tokenize
+    # This avoids punkt/punkt_tab dependency issues on Streamlit Cloud
+    # Split on whitespace and filter empty strings
+    tokens = [token for token in text.split() if token]
     
     # Get stopwords
     stop_words = set(stopwords.words('english'))
