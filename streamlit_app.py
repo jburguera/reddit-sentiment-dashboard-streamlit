@@ -29,27 +29,49 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # --- Download NLTK resources FIRST before importing NLTK modules ---
 import nltk
-nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')
+import sys
+
+# Use home directory for NLTK data on Streamlit Cloud
+nltk_data_dir = os.path.expanduser('~/nltk_data')
 os.makedirs(nltk_data_dir, exist_ok=True)
 
-# Add to NLTK data path
-if nltk_data_dir not in nltk.data.path:
-    nltk.data.path.insert(0, nltk_data_dir)
+# Set NLTK data path at the beginning
+nltk.data.path = [nltk_data_dir] + nltk.data.path
 
-# Download required resources immediately
-try:
-    # Try punkt_tab first (NLTK 3.9+)
-    nltk.download('punkt_tab', download_dir=nltk_data_dir, quiet=True)
-except:
-    # Fallback to punkt for older versions
-    nltk.download('punkt', download_dir=nltk_data_dir, quiet=True)
-
-# Download other essential resources
-for resource in ['vader_lexicon', 'stopwords', 'wordnet', 'omw-1.4', 'averaged_perceptron_tagger']:
+# Function to ensure NLTK resource is downloaded
+def ensure_nltk_resource(resource_name, resource_path):
+    """Download NLTK resource if not already present"""
     try:
-        nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
-    except:
-        pass
+        nltk.data.find(resource_path)
+        return True
+    except LookupError:
+        try:
+            print(f"Downloading {resource_name}...", file=sys.stderr)
+            nltk.download(resource_name, download_dir=nltk_data_dir, quiet=False)
+            return True
+        except Exception as e:
+            print(f"Error downloading {resource_name}: {e}", file=sys.stderr)
+            return False
+
+# Download all required resources with verification
+resources_to_download = [
+    ('punkt_tab', 'tokenizers/punkt_tab/english/'),
+    ('vader_lexicon', 'sentiment/vader_lexicon.zip'),
+    ('stopwords', 'corpora/stopwords'),
+    ('wordnet', 'corpora/wordnet'),
+    ('omw-1.4', 'corpora/omw-1.4'),
+    ('averaged_perceptron_tagger', 'taggers/averaged_perceptron_tagger')
+]
+
+for resource_name, resource_path in resources_to_download:
+    ensure_nltk_resource(resource_name, resource_path)
+
+# Try punkt as fallback if punkt_tab didn't work
+try:
+    nltk.data.find('tokenizers/punkt_tab/english/')
+except LookupError:
+    print("punkt_tab not found, trying punkt...", file=sys.stderr)
+    ensure_nltk_resource('punkt', 'tokenizers/punkt/english.pickle')
 
 # Now import NLTK modules after resources are downloaded
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
