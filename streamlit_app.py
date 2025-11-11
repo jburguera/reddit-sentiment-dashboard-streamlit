@@ -80,6 +80,9 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from wordcloud import WordCloud
 
+# Verify NLTK setup completed
+print(f"NLTK data paths: {nltk.data.path[:3]}", file=sys.stderr)
+
 # --- Splash Screen ---
 def show_splash_screen():
     # Check if this is the first run of the app
