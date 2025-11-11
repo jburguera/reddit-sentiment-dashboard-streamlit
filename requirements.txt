@@ -1,9 +1,10 @@
+# Updated 2025-11-11 - NLTK punkt_tab fix
 streamlit>=1.22.0
 matplotlib
 seaborn
 pandas
 praw
-nltk>=3.7
+nltk>=3.9.1
 wordcloud
 gensim
 pyLDAvis
