@@ -3,12 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import praw
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from wordcloud import WordCloud
 import os
 import time
 from datetime import datetime, timedelta
@@ -32,6 +26,37 @@ import io
 # Suppress warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+# --- Download NLTK resources FIRST before importing NLTK modules ---
+import nltk
+nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')
+os.makedirs(nltk_data_dir, exist_ok=True)
+
+# Add to NLTK data path
+if nltk_data_dir not in nltk.data.path:
+    nltk.data.path.insert(0, nltk_data_dir)
+
+# Download required resources immediately
+try:
+    # Try punkt_tab first (NLTK 3.9+)
+    nltk.download('punkt_tab', download_dir=nltk_data_dir, quiet=True)
+except:
+    # Fallback to punkt for older versions
+    nltk.download('punkt', download_dir=nltk_data_dir, quiet=True)
+
+# Download other essential resources
+for resource in ['vader_lexicon', 'stopwords', 'wordnet', 'omw-1.4', 'averaged_perceptron_tagger']:
+    try:
+        nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
+    except:
+        pass
+
+# Now import NLTK modules after resources are downloaded
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from wordcloud import WordCloud
 
 # --- Splash Screen ---
 def show_splash_screen():
@@ -272,33 +297,6 @@ def detect_sentiment_trend(df_comments, window_size=3):
     }
 
 # --- NLP Functions ---
-@st.cache_data(ttl=3600, show_spinner=False)
-def download_nltk_resources():
-    nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')
-    os.makedirs(nltk_data_dir, exist_ok=True)
-
-    # Explicitly set NLTK data path
-    if nltk_data_dir not in nltk.data.path:
-        nltk.data.path.append(nltk_data_dir)
-
-    # Resources to download - using punkt_tab for newer NLTK versions
-    resources = ['vader_lexicon', 'punkt_tab', 'stopwords', 'wordnet', 'omw-1.4', 'averaged_perceptron_tagger']
-
-    for resource in resources:
-        try:
-            nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
-        except Exception as e:
-            # If punkt_tab fails, try punkt (for older NLTK versions)
-            if resource == 'punkt_tab':
-                try:
-                    nltk.download('punkt', download_dir=nltk_data_dir, quiet=True)
-                except:
-                    st.error(f"Error downloading punkt/punkt_tab: {str(e)}")
-                    return False
-            else:
-                st.warning(f"Warning downloading {resource}: {str(e)}")
-    return True
-
 def preprocess_text(text, custom_stopwords=None):
     """Preprocess text for NLP tasks."""
     if not isinstance(text, str) or len(text.strip()) == 0:
@@ -802,11 +800,6 @@ The analysis uses VADER sentiment analysis from NLTK to categorize comments as p
 """)
 
 # --- Main Process ---
-# Download NLTK resources
-if not download_nltk_resources():
-    st.error("Failed to download required NLTK resources. Please check your internet connection.")
-    st.stop()
-
 # Load Reddit credentials
 credentials = load_reddit_credentials()
 if not credentials:
