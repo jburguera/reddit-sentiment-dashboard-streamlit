@@ -333,9 +333,14 @@ def preprocess_text(text, custom_stopwords=None):
     text = re.sub(r'\*\*|\*', '', text)  # Remove Reddit bold/italic
     text = re.sub(r'&amp;', '&', text)  # Replace HTML entities
     text = re.sub(r'[^a-zA-Z\s]', '', text)  # Keep only letters and spaces
-    
-    # Tokenize
-    tokens = word_tokenize(text)
+
+    # Tokenize - use preserve_line=True to avoid punkt dependency
+    # This is more robust for Streamlit Cloud deployment
+    try:
+        tokens = word_tokenize(text, preserve_line=True)
+    except:
+        # Fallback to simple tokenization if NLTK fails
+        tokens = text.split()
     
     # Get stopwords
     stop_words = set(stopwords.words('english'))
