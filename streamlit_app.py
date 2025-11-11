@@ -274,29 +274,29 @@ def detect_sentiment_trend(df_comments, window_size=3):
 # --- NLP Functions ---
 @st.cache_data(ttl=3600, show_spinner=False)
 def download_nltk_resources():
-    nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')  
+    nltk_data_dir = os.path.join(os.getcwd(), 'nltk_data')
     os.makedirs(nltk_data_dir, exist_ok=True)
-    
+
     # Explicitly set NLTK data path
     if nltk_data_dir not in nltk.data.path:
         nltk.data.path.append(nltk_data_dir)
-    
-    resources = ['vader_lexicon', 'punkt', 'stopwords', 'wordnet']
+
+    # Resources to download - using punkt_tab for newer NLTK versions
+    resources = ['vader_lexicon', 'punkt_tab', 'stopwords', 'wordnet', 'omw-1.4', 'averaged_perceptron_tagger']
+
     for resource in resources:
         try:
             nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
-            # Verify download
-            if resource == 'punkt':
-                try:
-                    nltk.data.find('tokenizers/punkt/english.pickle')
-                except LookupError:
-                    try:
-                        nltk.data.find('tokenizers/punkt_tab/english/')
-                    except LookupError:
-                        pass  # Will work with the downloaded version
         except Exception as e:
-            st.error(f"Error downloading {resource}: {str(e)}")
-            return False
+            # If punkt_tab fails, try punkt (for older NLTK versions)
+            if resource == 'punkt_tab':
+                try:
+                    nltk.download('punkt', download_dir=nltk_data_dir, quiet=True)
+                except:
+                    st.error(f"Error downloading punkt/punkt_tab: {str(e)}")
+                    return False
+            else:
+                st.warning(f"Warning downloading {resource}: {str(e)}")
     return True
 
 def preprocess_text(text, custom_stopwords=None):
