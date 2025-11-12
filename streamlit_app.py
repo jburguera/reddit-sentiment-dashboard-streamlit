@@ -1551,11 +1551,11 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 },
                 "sentiment_trend": sentiment_trend_info if isinstance(sentiment_trend_info, dict) else str(sentiment_trend_info),
                 "statistics": {
-                    "mean": float(sentiment_stats['mean']),
-                    "median": float(sentiment_stats['50%']),
-                    "std_dev": float(sentiment_stats['std']),
-                    "min": float(sentiment_stats['min']),
-                    "max": float(sentiment_stats['max'])
+                    "mean": float(df_comments['vader_compound'].mean()),
+                    "median": float(df_comments['vader_compound'].median()),
+                    "std_dev": float(df_comments['vader_compound'].std()),
+                    "min": float(df_comments['vader_compound'].min()),
+                    "max": float(df_comments['vader_compound'].max())
                 },
                 "correlations": {
                     "sentiment_vs_score": float(corr_score_sentiment),
