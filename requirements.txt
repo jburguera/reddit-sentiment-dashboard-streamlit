@@ -10,3 +10,4 @@ gensim
 pyLDAvis
 plotly
 Pillow
+statsmodels
