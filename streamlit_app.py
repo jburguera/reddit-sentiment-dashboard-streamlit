@@ -139,9 +139,26 @@ show_splash_screen()
 # --- Custom CSS ---
 st.markdown("""
 <style>
+    :root {
+        --tesla-red: #E31937;
+        --tesla-red-dark: #C0392B;
+        --positive-color: #1E8449;
+        --neutral-color: #707B7C;
+        --negative-color: #C0392B;
+        --background-light: #ffffff;
+        --background-gray: #f9f9f9;
+        --text-dark: #2c3e50;
+        --text-gray: #666666;
+        --text-light: #95a5a6;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.12);
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     .main-header {
         font-size: 2.5rem;
-        color: #E31937;
+        color: var(--tesla-red);
         font-weight: 800;
     }
     .subheader {
@@ -152,15 +169,15 @@ st.markdown("""
     .card {
         border-radius: 12px;
         padding: 20px;
-        background: linear-gradient(145deg, #ffffff 0%, #f9f9f9 100%);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
+        background: linear-gradient(145deg, var(--background-light) 0%, var(--background-gray) 100%);
+        box-shadow: var(--shadow-md), var(--shadow-sm);
         margin-bottom: 20px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: var(--transition-smooth);
         border: 1px solid rgba(0, 0, 0, 0.05);
     }
     .card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+        box-shadow: var(--shadow-lg), var(--shadow-md);
         border-color: rgba(227, 25, 55, 0.1);
     }
     .metric-value {
@@ -170,8 +187,55 @@ st.markdown("""
     }
     .metric-label {
         font-size: 1rem;
-        color: #666666;
+        color: var(--text-gray);
         text-align: center;
+    }
+    .tooltip-icon {
+        cursor: help;
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-left: 5px;
+    }
+    .metric-card-enhanced {
+        position: relative;
+        overflow: hidden;
+    }
+    .metric-card-enhanced::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--tesla-red) 0%, var(--tesla-red-dark) 100%);
+    }
+    .sticky-toc {
+        position: sticky;
+        top: 20px;
+        background: var(--background-light);
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 20px;
+    }
+    .sticky-toc h4 {
+        margin-top: 0;
+        color: var(--tesla-red);
+        font-size: 1rem;
+    }
+    .sticky-toc a {
+        display: block;
+        padding: 8px 10px;
+        color: var(--text-dark);
+        text-decoration: none;
+        border-radius: 4px;
+        transition: var(--transition-smooth);
+        font-size: 0.9rem;
+    }
+    .sticky-toc a:hover {
+        background: var(--background-gray);
+        color: var(--tesla-red);
+        padding-left: 15px;
     }
     .stTabs [data-baseweb="tab-list"] {
         gap: 24px;
@@ -190,27 +254,27 @@ st.markdown("""
         color: white;
     }
     .sentiment-positive {
-        color: #1E8449;
+        color: var(--positive-color);
         font-weight: 600;
     }
     .sentiment-neutral {
-        color: #707B7C;
+        color: var(--neutral-color);
         font-weight: 600;
     }
     .sentiment-negative {
-        color: #C0392B;
+        color: var(--negative-color);
         font-weight: 600;
     }
     .trend-up {
-        color: #1E8449;
+        color: var(--positive-color);
         font-weight: 600;
     }
     .trend-stable {
-        color: #707B7C;
+        color: var(--neutral-color);
         font-weight: 600;
     }
     .trend-down {
-        color: #C0392B;
+        color: var(--negative-color);
         font-weight: 600;
     }
     hr {
@@ -219,13 +283,13 @@ st.markdown("""
     }
     .elegant-separator {
         height: 3px;
-        background: linear-gradient(90deg, transparent 0%, #E31937 20%, #E31937 80%, transparent 100%);
+        background: linear-gradient(90deg, transparent 0%, var(--tesla-red) 20%, var(--tesla-red) 80%, transparent 100%);
         border: none;
         margin: 2rem 0;
         opacity: 0.6;
     }
     .insights-panel {
-        background: linear-gradient(135deg, #E31937 0%, #C0392B 100%);
+        background: linear-gradient(135deg, var(--tesla-red) 0%, var(--tesla-red-dark) 100%);
         color: white;
         padding: 25px;
         border-radius: 12px;
@@ -247,18 +311,18 @@ st.markdown("""
         border-left: 4px solid rgba(255, 255, 255, 0.5);
     }
     .footer {
-        background: linear-gradient(145deg, #2c3e50 0%, #34495e 100%);
+        background: linear-gradient(145deg, var(--text-dark) 0%, #34495e 100%);
         color: #ecf0f1;
         padding: 30px 20px;
         border-radius: 12px;
         margin-top: 40px;
         text-align: center;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-md);
     }
     .footer a {
-        color: #E31937;
+        color: var(--tesla-red);
         text-decoration: none;
-        transition: color 0.3s ease;
+        transition: var(--transition-smooth);
         font-weight: 500;
     }
     .footer a:hover {
@@ -272,10 +336,10 @@ st.markdown("""
     .footer-info {
         margin-top: 15px;
         font-size: 0.9rem;
-        color: #95a5a6;
+        color: var(--text-light);
     }
     .download-btn {
-        background-color: #E31937;
+        background-color: var(--tesla-red);
         color: white;
         padding: 10px 15px;
         border-radius: 5px;
@@ -284,10 +348,13 @@ st.markdown("""
         display: inline-block;
         text-align: center;
         margin-top: 10px;
+        transition: var(--transition-smooth);
     }
     .download-btn:hover {
-        background-color: #C0392B;
+        background-color: var(--tesla-red-dark);
         color: white;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
     }
     .auto-refresh-active {
         color: #1E8449;
@@ -560,29 +627,38 @@ def fetch_reddit_data(credentials, subreddit_name, post_limit, min_comments, tim
         
         subreddit = reddit.subreddit(subreddit_name)
         
-        # Create progress bar
-        progress_text = "Fetching Reddit data..."
+        # Create progress bar with status
+        progress_text = "🔍 Conectando con Reddit..."
         progress_bar = st.progress(0, text=progress_text)
-        
+        status_text = st.empty()
+
         # Get hot posts
+        status_text.info(f"📥 Descargando posts de r/{subreddit_name}...")
         hot_posts = list(subreddit.hot(limit=post_limit))
         filtered_posts = [post for post in hot_posts if post.num_comments >= min_comments]
-        
+
         # Check if we have posts
         if not filtered_posts:
             st.warning(f"No posts found with at least {min_comments} comments. Try adjusting your filters.")
+            status_text.empty()
             return None, None
-        
+
+        status_text.success(f"✅ Encontrados {len(filtered_posts)} posts con ≥{min_comments} comentarios")
+
         # Prepare for data collection
         post_data_list = []
         comment_data_list = []
-        
+        total_comments_collected = 0
+
         # Process posts with progress tracking
         total_posts = len(filtered_posts)
         for i, post in enumerate(filtered_posts):
             # Update progress
             progress = int((i + 1) / total_posts * 100)
-            progress_bar.progress(progress, text=f"{progress_text} ({i+1}/{total_posts} posts)")
+            progress_bar.progress(
+                progress,
+                text=f"📝 Procesando post {i+1}/{total_posts} • {total_comments_collected} comentarios recopilados"
+            )
             
             # Extract post data
             post_data = {
@@ -611,14 +687,16 @@ def fetch_reddit_data(credentials, subreddit_name, post_limit, min_comments, tim
                     "post_title": post.title
                 }
                 comment_data_list.append(comment_data)
-        
-        # Clear progress bar
+                total_comments_collected += 1
+
+        # Clear progress bar and show final status
         progress_bar.empty()
-        
+        status_text.success(f"✅ Recopilación completa: {len(filtered_posts)} posts • {total_comments_collected} comentarios")
+
         # Create DataFrames
         df_posts = pd.DataFrame(post_data_list)
         df_comments = pd.DataFrame(comment_data_list)
-        
+
         return df_posts, df_comments
     
     except Exception as e:
@@ -628,25 +706,30 @@ def fetch_reddit_data(credentials, subreddit_name, post_limit, min_comments, tim
 def analyze_sentiment(df_comments):
     """Perform sentiment analysis on comments."""
     analyzer = SentimentIntensityAnalyzer()
-    
-    # Create progress bar
-    progress_text = "Analyzing sentiment..."
-    progress_bar = st.progress(0, text=progress_text)
-    
+
+    # Create progress bar with status
+    progress_bar = st.progress(0, text="🔬 Iniciando análisis de sentiment...")
+    status_text = st.empty()
+
     # Prepare columns for sentiment scores
     df_comments['vader_neg'] = None
     df_comments['vader_neu'] = None
     df_comments['vader_pos'] = None
     df_comments['vader_compound'] = None
-    
+
     # Process comments with progress tracking
     total_comments = len(df_comments)
+    status_text.info(f"🔬 Paso 1/3: Analizando sentiment con VADER en {total_comments} comentarios...")
+
     for i, (index, row) in enumerate(df_comments.iterrows()):
         # Update progress every 10 comments to improve performance
         if i % 10 == 0 or i == total_comments - 1:
-            progress = int((i + 1) / total_comments * 100)
-            progress_bar.progress(progress, text=f"{progress_text} ({i+1}/{total_comments} comments)")
-        
+            progress = int((i + 1) / total_comments * 33)  # First 33% for sentiment analysis
+            progress_bar.progress(
+                progress,
+                text=f"🔬 Analizando sentiment: {i+1}/{total_comments} ({(i+1)/total_comments*100:.1f}%)"
+            )
+
         comment_text = row['comment_text']
         if isinstance(comment_text, str):
             vs = analyzer.polarity_scores(comment_text)
@@ -654,36 +737,48 @@ def analyze_sentiment(df_comments):
         else:
             df_comments.loc[index, ['vader_neg', 'vader_neu', 'vader_pos', 'vader_compound']] = [0.0, 1.0, 0.0, 0.0]
     
-    # Clear progress bar
-    progress_bar.empty()
-    
     # Categorize sentiment
+    progress_bar.progress(33, text="📊 Paso 2/3: Categorizando sentiment (positivo/neutral/negativo)...")
+    status_text.info("📊 Paso 2/3: Categorizando sentiment...")
+
     df_comments['sentiment_category'] = df_comments['vader_compound'].apply(
         lambda score: "Positive" if score >= 0.05 else ("Negative" if score <= -0.05 else "Neutral")
     )
-    
+
     # Add datetime columns
     df_comments['comment_datetime'] = pd.to_datetime(df_comments['comment_created_utc'], unit='s', utc=True)
     df_comments['comment_date'] = df_comments['comment_datetime'].dt.date
     df_comments['comment_hour'] = df_comments['comment_datetime'].dt.hour
-    
+
+    progress_bar.progress(50, text="⏰ Procesando datos temporales...")
+
     # Preprocess comment text for NLP analysis
-    progress_text = "Preprocessing text for NLP analysis..."
-    progress_bar = st.progress(0, text=progress_text)
-    
+    status_text.info(f"🔤 Paso 3/3: Preprocesando texto para NLP en {total_comments} comentarios...")
     df_comments['tokens'] = None
-    total_comments = len(df_comments)
-    
+
     for i, (index, row) in enumerate(df_comments.iterrows()):
         if i % 20 == 0 or i == total_comments - 1:
-            progress = int((i + 1) / total_comments * 100)
-            progress_bar.progress(progress, text=f"{progress_text} ({i+1}/{total_comments} comments)")
-        
+            progress = 50 + int((i + 1) / total_comments * 50)  # 50-100% for preprocessing
+            progress_bar.progress(
+                progress,
+                text=f"🔤 Tokenizando: {i+1}/{total_comments} ({(i+1)/total_comments*100:.1f}%)"
+            )
+
         tokens = preprocess_text(row['comment_text'])
         df_comments.loc[index, 'tokens'] = str(tokens)  # Store as string for serialization
-    
+
+    # Get sentiment distribution
+    sentiment_counts = df_comments['sentiment_category'].value_counts()
+    pos_count = sentiment_counts.get('Positive', 0)
+    neu_count = sentiment_counts.get('Neutral', 0)
+    neg_count = sentiment_counts.get('Negative', 0)
+
+    # Show final summary
     progress_bar.empty()
-    
+    status_text.success(
+        f"✅ Análisis completado: {pos_count} positivos • {neu_count} neutrales • {neg_count} negativos"
+    )
+
     return df_comments
 
 def create_sentiment_summary(df_comments):
@@ -878,6 +973,21 @@ with st.sidebar:
         refresh_data = False
 
     st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
+
+    # Table of Contents (only show when data is loaded)
+    if 'data_loaded' in st.session_state and st.session_state['data_loaded']:
+        st.markdown("""
+        <div class="sticky-toc">
+            <h4>📑 Tabla de Contenidos</h4>
+            <a href="#sentiment-distribution">📊 Distribución</a>
+            <a href="#temporal-analysis">⏱️ Análisis Temporal</a>
+            <a href="#top-posts">⭐ Posts Destacados</a>
+            <a href="#word-analysis">💬 Análisis de Palabras</a>
+            <a href="#data-export">📥 Exportar Datos</a>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
+
     st.markdown("#### About")
     st.markdown("This dashboard analyzes sentiment in Reddit posts about Tesla from the selected subreddit.")
     st.markdown("Configure the parameters above and click '🔍 Analyze Sentiment' to start.")
@@ -941,48 +1051,68 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     # --- Create summary metrics ---
     sentiment_summary = create_sentiment_summary(df_comments)
 
-    # Display summary metrics with trend indicators
+    # Display summary metrics with trend indicators and tooltips
     col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown(f'<p class="metric-value">{sentiment_summary["total_comments"]}</p>', unsafe_allow_html=True)
-        st.markdown('<p class="metric-label">Total Comments</p>', unsafe_allow_html=True)
+        st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
+        st.metric(
+            label="💬 Total Comments",
+            value=f"{sentiment_summary['total_comments']:,}",
+            help="Número total de comentarios analizados de los posts seleccionados"
+        )
         st.markdown('</div>', unsafe_allow_html=True)
-    
+
     with col2:
         sentiment_score = sentiment_summary["avg_compound"]
-        sentiment_color = "#1E8449" if sentiment_score >= 0.05 else ("#C0392B" if sentiment_score <= -0.05 else "#707B7C")
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown(f'<p class="metric-value" style="color:{sentiment_color}">{sentiment_score:.2f}</p>', unsafe_allow_html=True)
-        st.markdown('<p class="metric-label">Average Sentiment Score</p>', unsafe_allow_html=True)
+        sentiment_label = "Positivo" if sentiment_score >= 0.05 else ("Negativo" if sentiment_score <= -0.05 else "Neutral")
+        st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
+        st.metric(
+            label="📊 Sentiment Score",
+            value=f"{sentiment_score:.3f}",
+            delta=sentiment_label,
+            help="Score VADER promedio (-1 = muy negativo, +1 = muy positivo). Threshold: ≥0.05 positivo, ≤-0.05 negativo"
+        )
         st.markdown('</div>', unsafe_allow_html=True)
-    
+
     with col3:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown(f'<p class="metric-value sentiment-positive">{sentiment_summary["positive_pct"]:.1f}%</p>', unsafe_allow_html=True)
-        st.markdown('<p class="metric-label">Positive Comments</p>', unsafe_allow_html=True)
+        st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
+        st.metric(
+            label="😊 Comentarios Positivos",
+            value=f"{sentiment_summary['positive_pct']:.1f}%",
+            delta=f"{int(sentiment_summary['positive_pct'] * sentiment_summary['total_comments'] / 100)} comentarios",
+            help="Porcentaje de comentarios con score VADER ≥0.05 (sentiment positivo)"
+        )
         st.markdown('</div>', unsafe_allow_html=True)
-    
+
     with col4:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown(f'<p class="metric-value sentiment-negative">{sentiment_summary["negative_pct"]:.1f}%</p>', unsafe_allow_html=True)
-        st.markdown('<p class="metric-label">Negative Comments</p>', unsafe_allow_html=True)
+        st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
+        st.metric(
+            label="😞 Comentarios Negativos",
+            value=f"{sentiment_summary['negative_pct']:.1f}%",
+            delta=f"{int(sentiment_summary['negative_pct'] * sentiment_summary['total_comments'] / 100)} comentarios",
+            delta_color="inverse",
+            help="Porcentaje de comentarios con score VADER ≤-0.05 (sentiment negativo)"
+        )
         st.markdown('</div>', unsafe_allow_html=True)
-    
+
     with col5:
+        st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
         if isinstance(sentiment_trend_info, dict):
             trend_emoji = "📈" if sentiment_trend_info['trend'] == "Up" else ("📉" if sentiment_trend_info['trend'] == "Down" else "➡️")
-            trend_color = "#1E8449" if sentiment_trend_info['trend'] == "Up" else ("#C0392B" if sentiment_trend_info['trend'] == "Down" else "#707B7C")
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown(f'<p class="metric-value" style="color:{trend_color}">{trend_emoji} {sentiment_trend_info["trend"]}</p>', unsafe_allow_html=True)
-            st.markdown('<p class="metric-label">Sentiment Trend</p>', unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.metric(
+                label=f"{trend_emoji} Tendencia",
+                value=sentiment_trend_info["trend"],
+                delta=f"{sentiment_trend_info['latest_change']:.1f}%",
+                help="Tendencia de sentiment basada en cambio porcentual con promedio móvil de 3 días"
+            )
         else:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown('<p class="metric-value">N/A</p>', unsafe_allow_html=True)
-            st.markdown('<p class="metric-label">Sentiment Trend</p>', unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.metric(
+                label="📊 Tendencia",
+                value="N/A",
+                help="Insuficientes datos para calcular tendencia"
+            )
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # Show trend insight
     if isinstance(sentiment_trend_info, dict):
@@ -1068,6 +1198,83 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             dominant_color, dominant_color, dominant_icon, dominant_color,
             dominant_sentiment, dominant_sentiment_pct, sentiment_summary['avg_compound']
         ), unsafe_allow_html=True)
+
+    # --- Sparklines for Quick Trends ---
+    st.markdown("### 📈 Tendencias Rápidas")
+
+    spark_col1, spark_col2, spark_col3 = st.columns(3)
+
+    # Sentiment over time sparkline
+    with spark_col1:
+        sentiment_by_date = df_comments.groupby('comment_date')['vader_compound'].mean().reset_index()
+        sentiment_by_date = sentiment_by_date.sort_values('comment_date')
+
+        fig_spark1 = go.Figure()
+        fig_spark1.add_trace(go.Scatter(
+            x=sentiment_by_date['comment_date'],
+            y=sentiment_by_date['vader_compound'],
+            mode='lines',
+            line=dict(color='#E31937', width=2),
+            fill='tozeroy',
+            fillcolor='rgba(227, 25, 55, 0.1)'
+        ))
+        fig_spark1.update_layout(
+            title="Sentiment en el Tiempo",
+            height=150,
+            margin=dict(l=10, r=10, t=30, b=10),
+            xaxis=dict(showticklabels=False, showgrid=False),
+            yaxis=dict(showticklabels=True, showgrid=True, gridcolor='rgba(0,0,0,0.05)'),
+            plot_bgcolor='white',
+            paper_bgcolor='white'
+        )
+        st.plotly_chart(fig_spark1, width='stretch')
+
+    # Comments volume sparkline
+    with spark_col2:
+        comments_by_date = df_comments.groupby('comment_date').size().reset_index()
+        comments_by_date.columns = ['comment_date', 'count']
+        comments_by_date = comments_by_date.sort_values('comment_date')
+
+        fig_spark2 = go.Figure()
+        fig_spark2.add_trace(go.Bar(
+            x=comments_by_date['comment_date'],
+            y=comments_by_date['count'],
+            marker=dict(color='#1E8449'),
+            opacity=0.7
+        ))
+        fig_spark2.update_layout(
+            title="Volumen de Comentarios",
+            height=150,
+            margin=dict(l=10, r=10, t=30, b=10),
+            xaxis=dict(showticklabels=False, showgrid=False),
+            yaxis=dict(showticklabels=True, showgrid=True, gridcolor='rgba(0,0,0,0.05)'),
+            plot_bgcolor='white',
+            paper_bgcolor='white'
+        )
+        st.plotly_chart(fig_spark2, width='stretch')
+
+    # Sentiment distribution sparkline
+    with spark_col3:
+        sentiment_dist = df_comments['sentiment_category'].value_counts()
+        colors = {'Positive': '#1E8449', 'Neutral': '#707B7C', 'Negative': '#C0392B'}
+
+        fig_spark3 = go.Figure()
+        fig_spark3.add_trace(go.Bar(
+            x=sentiment_dist.index,
+            y=sentiment_dist.values,
+            marker=dict(color=[colors[cat] for cat in sentiment_dist.index]),
+            opacity=0.8
+        ))
+        fig_spark3.update_layout(
+            title="Distribución de Sentiment",
+            height=150,
+            margin=dict(l=10, r=10, t=30, b=10),
+            xaxis=dict(showticklabels=True),
+            yaxis=dict(showticklabels=True, showgrid=True, gridcolor='rgba(0,0,0,0.05)'),
+            plot_bgcolor='white',
+            paper_bgcolor='white'
+        )
+        st.plotly_chart(fig_spark3, width='stretch')
 
     st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
