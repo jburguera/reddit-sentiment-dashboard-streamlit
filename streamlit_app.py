@@ -819,10 +819,10 @@ with st.sidebar:
     st.markdown("Configure the parameters above and click '🔍 Analyze Sentiment' to start.")
 
 # --- Main Content ---
-st.markdown('<p class="main-header">Dashboard de sentimientos Tesla</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-header">Dashboard de sentiment Tesla</p>', unsafe_allow_html=True)
 
 st.markdown("""
-Analiza el sentimiento del público sobre Tesla en Reddit usando análisis de sentimientos VADER (NLTK)
+Analiza el sentiment del público sobre Tesla en Reddit usando análisis VADER (NLTK)
 para clasificar comentarios como positivos, negativos o neutrales.
 """)
 
@@ -1625,9 +1625,9 @@ else:
     # Show welcome message when no analysis has been run yet
     st.markdown("""
     <div style="text-align: center; padding: 50px 20px;">
-        <h2 style="color: #E31937;">Bienvenido al Dashboard de Sentimientos Tesla</h2>
+        <h2 style="color: #E31937;">Bienvenido al Dashboard de Sentiment Tesla</h2>
         <p style="font-size: 1.2rem; margin: 30px 0;">
-            ¿Listo para analizar el sentimiento en Reddit?
+            ¿Listo para analizar el sentiment en Reddit?
         </p>
         <p style="color: #666; margin: 20px 0;">
             Configura los parámetros en la barra lateral y haz click en
@@ -1642,7 +1642,7 @@ else:
     with col1:
         st.markdown("""
         <div class="card">
-            <h3>📊 Análisis de sentimientos</h3>
+            <h3>📊 Análisis de sentiment</h3>
             <p>Analiza miles de comentarios de Reddit para entender la opinión pública sobre Tesla usando VADER.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -1651,7 +1651,7 @@ else:
         st.markdown("""
         <div class="card">
             <h3>📈 Detección de tendencias</h3>
-            <p>Rastrea cómo evoluciona el sentimiento en el tiempo e identifica cambios con análisis visual.</p>
+            <p>Rastrea cómo evoluciona el sentiment en el tiempo e identifica cambios con análisis visual.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1679,7 +1679,7 @@ else:
        - Espera a que se descarguen y analicen los datos
 
     3. **Explorar resultados**:
-       - Ver métricas y tendencias de sentimiento
+       - Ver métricas y tendencias de sentiment
        - Analizar los posts más destacados
        - Explorar nubes de palabras y modelos de tópicos
        - Exportar datos para análisis adicional

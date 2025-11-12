@@ -1,6 +1,6 @@
 # Tesla Sentiment Dashboard
 
-Dashboard interactivo para analizar el sentimiento sobre Tesla en Reddit usando procesamiento de lenguaje natural y visualización de datos.
+Dashboard interactivo para analizar el sentiment sobre Tesla en Reddit usando procesamiento de lenguaje natural y visualización de datos.
 
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
@@ -9,22 +9,22 @@ Dashboard interactivo para analizar el sentimiento sobre Tesla en Reddit usando 
 ## Características principales
 
 - Recopilación de datos de Reddit desde cualquier subreddit
-- Análisis de sentimientos con VADER (NLTK)
+- Análisis de sentiment con VADER (NLTK)
 - Gráficos interactivos con Plotly y Matplotlib
 - Modelado de tópicos con LDA para descubrir temas de conversación
-- Nubes de palabras segmentadas por sentimiento
+- Nubes de palabras segmentadas por sentiment
 - Detección automática de tendencias
 - Exportación de datos en CSV y JSON
 
 ## Qué incluye
 
-### Distribución de sentimientos
+### Distribución de sentiment
 - Gráfico circular con distribución positiva/neutral/negativa
 - Histograma de puntuaciones
 - Violin plots para ver la distribución en detalle
 
 ### Análisis temporal
-- Tendencias de sentimiento en el tiempo
+- Tendencias de sentiment en el tiempo
 - Patrones por hora del día
 - Volumen de comentarios
 
@@ -34,7 +34,7 @@ Dashboard interactivo para analizar el sentimiento sobre Tesla en Reddit usando 
 - Métricas de engagement (upvotes, comentarios, ratios)
 
 ### Análisis de palabras
-- Nubes de palabras por cada tipo de sentimiento
+- Nubes de palabras por cada tipo de sentiment
 - Top 15 palabras más comunes
 - Modelado de tópicos interactivo
 - Puntuación de coherencia para validar la calidad
@@ -106,8 +106,8 @@ El dashboard usa LDA (Latent Dirichlet Allocation) para descubrir temas automát
 ## Detección de tendencias
 
 El análisis de tendencias usa promedios móviles:
-- "Up": >5% de aumento en sentimiento
-- "Down": >5% de caída en sentimiento
+- "Up": >5% de aumento en sentiment
+- "Down": >5% de caída en sentiment
 - "Stable": cambios dentro de ±5%
 
 ## Dependencias
@@ -117,7 +117,7 @@ El análisis de tendencias usa promedios móviles:
 - seaborn - Visualización estadística
 - pandas - Manipulación de datos
 - praw - API de Reddit
-- nltk - Análisis de sentimientos
+- nltk - Análisis de sentiment
 - wordcloud - Nubes de palabras
 - gensim - Modelado de tópicos
 - pyLDAvis - Visualización LDA
@@ -144,7 +144,7 @@ reddit-sentiment-dashboard-streamlit/
    - Eliminar stopwords (incluyendo palabras específicas de Reddit)
    - Lemmatización
 
-2. Análisis de sentimientos:
+2. Análisis de sentiment:
    - VADER (Valence Aware Dictionary and sEntiment Reasoner)
    - Puntuación compuesta de -1 (muy negativo) a +1 (muy positivo)
    - Clasificación: Positivo (≥0.05), Neutral (-0.05 a 0.05), Negativo (≤-0.05)
