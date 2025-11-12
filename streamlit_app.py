@@ -1443,7 +1443,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                     'Negative': color_negative or '#C0392B'
                 },
                 title="Sentiment vs Comment Score",
-                trendline="lowess",
+                trendline="ols",  # Changed from lowess to ols (works without statsmodels)
                 opacity=0.6
             )
             fig_corr1.update_layout(
@@ -1471,7 +1471,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 x='Comment Count',
                 y='Avg Sentiment',
                 title="Post Engagement vs Average Sentiment",
-                trendline="lowess",
+                trendline="ols",  # Changed from lowess to ols (works without statsmodels)
                 color='Avg Sentiment',
                 color_continuous_scale='RdBu',
                 color_continuous_midpoint=0,
