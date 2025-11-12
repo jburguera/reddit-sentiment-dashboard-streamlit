@@ -961,14 +961,14 @@ with st.sidebar:
     st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Search/Analyze button - main action
-    st.markdown("### Ready to Analyze?")
-    analyze_button = st.button("🔍 Analyze Sentiment", type="primary", width='stretch')
+    st.markdown("### Ready to analyze?")
+    analyze_button = st.button("🔍 Analyze sentiment", type="primary", width='stretch')
 
     st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Manual refresh button (only show if data has been loaded before)
     if 'data_loaded' in st.session_state and st.session_state['data_loaded']:
-        refresh_data = st.button("🔄 Refresh Data", key="refresh_data", width='stretch')
+        refresh_data = st.button("🔄 Refresh data", key="refresh_data", width='stretch')
     else:
         refresh_data = False
 
@@ -1057,7 +1057,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     with col1:
         st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
         st.metric(
-            label="💬 Total Comments",
+            label="💬 Total comments",
             value=f"{sentiment_summary['total_comments']:,}",
             help="Número total de comentarios analizados de los posts seleccionados"
         )
@@ -1068,7 +1068,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         sentiment_label = "Positivo" if sentiment_score >= 0.05 else ("Negativo" if sentiment_score <= -0.05 else "Neutral")
         st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
         st.metric(
-            label="📊 Sentiment Score",
+            label="📊 Sentiment score",
             value=f"{sentiment_score:.3f}",
             delta=sentiment_label,
             help="Score VADER promedio (-1 = muy negativo, +1 = muy positivo). Threshold: ≥0.05 positivo, ≤-0.05 negativo"
@@ -1078,7 +1078,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     with col3:
         st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
         st.metric(
-            label="😊 Comentarios Positivos",
+            label="😊 Comentarios positivos",
             value=f"{sentiment_summary['positive_pct']:.1f}%",
             delta=f"{int(sentiment_summary['positive_pct'] * sentiment_summary['total_comments'] / 100)} comentarios",
             help="Porcentaje de comentarios con score VADER ≥0.05 (sentiment positivo)"
@@ -1088,7 +1088,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     with col4:
         st.markdown('<div class="card metric-card-enhanced">', unsafe_allow_html=True)
         st.metric(
-            label="😞 Comentarios Negativos",
+            label="😞 Comentarios negativos",
             value=f"{sentiment_summary['negative_pct']:.1f}%",
             delta=f"{int(sentiment_summary['negative_pct'] * sentiment_summary['total_comments'] / 100)} comentarios",
             delta_color="inverse",
@@ -1116,7 +1116,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
     # Show trend insight
     if isinstance(sentiment_trend_info, dict):
-        st.info(f"📊 Trend Insight: {sentiment_trend_info['description']}")
+        st.info(f"📊 Trend insight: {sentiment_trend_info['description']}")
 
     # --- Key Insights Panel ---
     st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
@@ -1138,7 +1138,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
 
     st.markdown("""
     <div class="insights-panel">
-        <h3>🔍 Key Insights del Análisis</h3>
+        <h3>🔍 Key insights del análisis</h3>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1165,7 +1165,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
 
         st.markdown("""
         <div class="card" style="background: rgba(255, 255, 255, 0.95); border-left: 4px solid {};">
-            <h4 style="color: {}; margin-top: 0;">{} Balance de Sentiment</h4>
+            <h4 style="color: {}; margin-top: 0;">{} Balance de sentiment</h4>
             <p style="font-size: 0.95rem; margin: 8px 0;">
                 <strong style="font-size: 1.8rem; display: block; margin: 10px 0; color: {};">{:+.1f}%</strong>
                 sentiment {}
@@ -1185,7 +1185,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
 
         st.markdown("""
         <div class="card" style="background: rgba(255, 255, 255, 0.95); border-left: 4px solid {};">
-            <h4 style="color: {}; margin-top: 0;">{} Sentiment Dominante</h4>
+            <h4 style="color: {}; margin-top: 0;">{} Sentiment dominante</h4>
             <p style="font-size: 0.95rem; margin: 8px 0;">
                 <strong style="font-size: 1.8rem; display: block; margin: 10px 0; color: {};">{}</strong>
                 representa el {:.1f}% de comentarios
@@ -1200,7 +1200,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         ), unsafe_allow_html=True)
 
     # --- Sparklines for Quick Trends ---
-    st.markdown("### 📈 Tendencias Rápidas")
+    st.markdown("### 📈 Tendencias rápidas")
 
     spark_col1, spark_col2, spark_col3 = st.columns(3)
 
@@ -1279,11 +1279,11 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # --- Visualization Tabs ---
-    tabs = st.tabs(["Sentiment Distribution", "Temporal Analysis", "Top Posts", "Word Analysis", "Data Export & Insights"])
+    tabs = st.tabs(["Sentiment distribution", "Temporal analysis", "Top posts", "Word analysis", "Data export & insights"])
     
     # Tab 1: Sentiment Distribution
     with tabs[0]:
-        st.markdown('<p class="subheader">Sentiment Distribution Analysis</p>', unsafe_allow_html=True)
+        st.markdown('<p class="subheader">Sentiment distribution analysis</p>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
@@ -1299,13 +1299,13 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             }
             
             fig_pie = px.pie(
-                sentiment_counts, 
-                values='Count', 
+                sentiment_counts,
+                values='Count',
                 names='Sentiment',
                 color='Sentiment',
                 color_discrete_map=colors,
                 hole=0.4,
-                title="Distribution of Sentiment Categories"
+                title="Distribution of sentiment categories"
             )
             
             fig_pie.update_layout(
@@ -1320,10 +1320,10 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         with col2:
             # Sentiment score histogram
             fig_hist = px.histogram(
-                df_comments, 
+                df_comments,
                 x='vader_compound',
                 nbins=30,
-                title="Distribution of Sentiment Scores",
+                title="Distribution of sentiment scores",
                 color_discrete_sequence=[color_main or '#E31937']
             )
             
@@ -1341,7 +1341,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             st.plotly_chart(fig_hist, width='stretch')
         
         # Combined violin and box plot
-        st.markdown("### Sentiment Score Distribution by Category")
+        st.markdown("### Sentiment score distribution by category")
         
         fig_violin = px.violin(
             df_comments,
@@ -1351,7 +1351,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             color_discrete_map=colors,
             box=True,
             points="all",
-            title="Sentiment Score Distribution by Category"
+            title="Sentiment score distribution by category"
         )
         
         fig_violin.update_layout(
@@ -1365,7 +1365,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
     # Tab 2: Temporal Analysis
     with tabs[1]:
-        st.markdown('<p class="subheader">Sentiment Over Time</p>', unsafe_allow_html=True)
+        st.markdown('<p class="subheader">Sentiment over time</p>', unsafe_allow_html=True)
         
         # Group data by date
         sentiment_by_date = df_comments.groupby('comment_date')['vader_compound'].mean().reset_index()
@@ -1377,7 +1377,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             x='Date',
             y='Average Sentiment',
             markers=True,
-            title="Average Sentiment Score Over Time",
+            title="Average sentiment score over time",
             color_discrete_sequence=[color_main or '#E31937']
         )
         
@@ -1402,7 +1402,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             sentiment_by_hour,
             x='Hour of Day',
             y='Average Sentiment',
-            title="Average Sentiment Score by Hour of Day",
+            title="Average sentiment score by hour of day",
             color='Average Sentiment',
             color_continuous_scale='RdBu',
             color_continuous_midpoint=0
@@ -1426,7 +1426,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             comment_volume,
             x='Date',
             y='Number of Comments',
-            title="Volume of Comments Over Time",
+            title="Volume of comments over time",
             color_discrete_sequence=[color_main or '#E31937']
         )
         
@@ -1441,7 +1441,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
     # Tab 3: Top Posts
     with tabs[2]:
-        st.markdown('<p class="subheader">Top Posts Analysis</p>', unsafe_allow_html=True)
+        st.markdown('<p class="subheader">Top posts analysis</p>', unsafe_allow_html=True)
         
         # Calculate average sentiment per post
         post_sentiment = df_comments.groupby('post_id').agg({
@@ -1464,7 +1464,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         )
         
         # Most positive posts
-        st.markdown("### Most Positive Posts")
+        st.markdown("### Most positive posts")
         positive_posts = post_sentiment.sort_values('Avg Sentiment', ascending=False).head(5)
         
         for i, row in positive_posts.iterrows():
@@ -1479,7 +1479,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 """, unsafe_allow_html=True)
         
         # Most negative posts
-        st.markdown("### Most Negative Posts")
+        st.markdown("### Most negative posts")
         negative_posts = post_sentiment.sort_values('Avg Sentiment', ascending=True).head(5)
         
         for i, row in negative_posts.iterrows():
@@ -1494,7 +1494,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 """, unsafe_allow_html=True)
         
         # Most discussed posts
-        st.markdown("### Most Discussed Posts")
+        st.markdown("### Most discussed posts")
         discussed_posts = post_sentiment.sort_values('Comment Count', ascending=False).head(5)
         
         for i, row in discussed_posts.iterrows():
@@ -1512,7 +1512,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
     # Tab 4: Word Analysis
     with tabs[3]:
-        st.markdown('<p class="subheader">Word Analysis</p>', unsafe_allow_html=True)
+        st.markdown('<p class="subheader">Word analysis</p>', unsafe_allow_html=True)
     
         # Prepare token data for analysis
         df_comments['tokens_list'] = df_comments['tokens'].apply(
@@ -1520,12 +1520,12 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         )
     
         # Word Clouds by Sentiment
-        st.markdown("### Word Clouds by Sentiment Category")
+        st.markdown("### Word clouds by sentiment category")
     
         col1, col2, col3 = st.columns(3)
     
         with col1:
-            st.markdown("#### Positive Comments")
+            st.markdown("#### Positive comments")
             positive_comments = df_comments[df_comments['sentiment_category'] == 'Positive']
             if len(positive_comments) > 0:
                 positive_tokens = positive_comments['tokens_list'].tolist()
@@ -1539,7 +1539,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 st.info("No positive comments to analyze")
     
         with col2:
-            st.markdown("#### Neutral Comments")
+            st.markdown("#### Neutral comments")
             neutral_comments = df_comments[df_comments['sentiment_category'] == 'Neutral']
             if len(neutral_comments) > 0:
                 neutral_tokens = neutral_comments['tokens_list'].tolist()
@@ -1553,7 +1553,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 st.info("No neutral comments to analyze")
     
         with col3:
-            st.markdown("#### Negative Comments")
+            st.markdown("#### Negative comments")
             negative_comments = df_comments[df_comments['sentiment_category'] == 'Negative']
             if len(negative_comments) > 0:
                 negative_tokens = negative_comments['tokens_list'].tolist()
@@ -1569,7 +1569,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Word Frequency Analysis
-        st.markdown("### Top Words by Sentiment Category")
+        st.markdown("### Top words by sentiment category")
     
         # Calculate word frequencies
         from collections import Counter
@@ -1577,7 +1577,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         col1, col2, col3 = st.columns(3)
     
         with col1:
-            st.markdown("#### Most Common in Positive")
+            st.markdown("#### Most common in positive")
             if len(positive_comments) > 0:
                 all_positive_words = [word for tokens in positive_comments['tokens_list'] for word in tokens]
                 positive_freq = Counter(all_positive_words).most_common(15)
@@ -1599,7 +1599,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                     st.plotly_chart(fig_pos_bar, width='stretch')
     
         with col2:
-            st.markdown("#### Most Common in Neutral")
+            st.markdown("#### Most common in neutral")
             if len(neutral_comments) > 0:
                 all_neutral_words = [word for tokens in neutral_comments['tokens_list'] for word in tokens]
                 neutral_freq = Counter(all_neutral_words).most_common(15)
@@ -1621,7 +1621,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                     st.plotly_chart(fig_neu_bar, width='stretch')
     
         with col3:
-            st.markdown("#### Most Common in Negative")
+            st.markdown("#### Most common in negative")
             if len(negative_comments) > 0:
                 all_negative_words = [word for tokens in negative_comments['tokens_list'] for word in tokens]
                 negative_freq = Counter(all_negative_words).most_common(15)
@@ -1645,7 +1645,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Topic Modeling
-        st.markdown("### Topic Modeling Analysis")
+        st.markdown("### Topic modeling analysis")
         st.markdown("Discover the main themes and topics discussed in the comments using Latent Dirichlet Allocation (LDA).")
     
         with st.spinner("Building topic model... This may take a moment."):
@@ -1659,13 +1659,13 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
                     # Display coherence score
                     st.metric(
-                        "Model Coherence Score",
+                        "Model coherence score",
                         f"{topic_viz['coherence_score']:.3f}",
                         help="Coherence score measures how interpretable the topics are. Higher is better (typically 0.4-0.7 is good)."
                     )
     
                     # Display topics
-                    st.markdown("#### Discovered Topics")
+                    st.markdown("#### Discovered topics")
     
                     topic_cols = st.columns(min(3, num_topics))
                     for idx, topic in enumerate(topic_viz['topics']):
@@ -1674,7 +1674,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                             st.write(", ".join(topic['words'][:8]))
     
                     # Interactive visualization
-                    st.markdown("#### Interactive Topic Visualization")
+                    st.markdown("#### Interactive topic visualization")
                     st.markdown("Explore topics interactively. Click on topics to see their top terms and relationships.")
     
                     # Display pyLDAvis visualization
@@ -1688,10 +1688,10 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
     # Tab 5: Data Export & Insights
     with tabs[4]:
-        st.markdown('<p class="subheader">Data Export & Advanced Insights</p>', unsafe_allow_html=True)
+        st.markdown('<p class="subheader">Data export & advanced insights</p>', unsafe_allow_html=True)
     
         # Sentiment Trend Analysis
-        st.markdown("### Sentiment Trend Analysis")
+        st.markdown("### Sentiment trend analysis")
     
         if isinstance(sentiment_trend_info, dict):
             col1, col2, col3 = st.columns(3)
@@ -1700,21 +1700,21 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 trend_color = "#1E8449" if sentiment_trend_info['trend'] == "Up" else ("#C0392B" if sentiment_trend_info['trend'] == "Down" else "#707B7C")
                 st.markdown('<div class="card">', unsafe_allow_html=True)
                 st.markdown(f'<p class="metric-value" style="color:{trend_color}">{sentiment_trend_info["trend"]}</p>', unsafe_allow_html=True)
-                st.markdown('<p class="metric-label">Sentiment Trend</p>', unsafe_allow_html=True)
+                st.markdown('<p class="metric-label">Sentiment trend</p>', unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
     
             with col2:
                 st.markdown('<div class="card">', unsafe_allow_html=True)
                 change_color = "#1E8449" if sentiment_trend_info['latest_change'] > 0 else ("#C0392B" if sentiment_trend_info['latest_change'] < 0 else "#707B7C")
                 st.markdown(f'<p class="metric-value" style="color:{change_color}">{sentiment_trend_info["latest_change"]:.1f}%</p>', unsafe_allow_html=True)
-                st.markdown('<p class="metric-label">Recent Change</p>', unsafe_allow_html=True)
+                st.markdown('<p class="metric-label">Recent change</p>', unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
     
             with col3:
                 st.markdown('<div class="card">', unsafe_allow_html=True)
                 value_color = "#1E8449" if sentiment_trend_info['latest_value'] > 0.05 else ("#C0392B" if sentiment_trend_info['latest_value'] < -0.05 else "#707B7C")
                 st.markdown(f'<p class="metric-value" style="color:{value_color}">{sentiment_trend_info["latest_value"]:.3f}</p>', unsafe_allow_html=True)
-                st.markdown('<p class="metric-label">Current Sentiment Score</p>', unsafe_allow_html=True)
+                st.markdown('<p class="metric-label">Current sentiment score</p>', unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
     
             st.info(sentiment_trend_info['description'])
@@ -1724,12 +1724,12 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Statistical Summary
-        st.markdown("### Statistical Summary")
+        st.markdown("### Statistical summary")
     
         col1, col2 = st.columns(2)
     
         with col1:
-            st.markdown("#### Sentiment Score Statistics")
+            st.markdown("#### Sentiment score statistics")
             # Calculate statistics directly to avoid pandas version issues
             vader_scores = df_comments['vader_compound']
             stats_df = pd.DataFrame({
@@ -1748,7 +1748,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             st.dataframe(stats_df, hide_index=True, width='stretch')
     
         with col2:
-            st.markdown("#### Comment Activity Statistics")
+            st.markdown("#### Comment activity statistics")
     
             # Calculate additional metrics
             avg_score = df_comments['comment_score'].mean()
@@ -1779,7 +1779,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Correlation Analysis
-        st.markdown("### Correlation Analysis")
+        st.markdown("### Correlation analysis")
         st.markdown("Explore relationships between different metrics")
     
         col1, col2 = st.columns(2)
@@ -1796,7 +1796,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                     'Neutral': color_neutral or '#707B7C',
                     'Negative': color_negative or '#C0392B'
                 },
-                title="Sentiment vs Comment Score",
+                title="Sentiment vs comment score",
                 trendline="ols",  # Changed from lowess to ols (works without statsmodels)
                 opacity=0.6
             )
@@ -1809,7 +1809,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
             # Calculate correlation
             corr_score_sentiment = df_comments['comment_score'].corr(df_comments['vader_compound'])
-            st.metric("Correlation Coefficient", f"{corr_score_sentiment:.3f}",
+            st.metric("Correlation coefficient", f"{corr_score_sentiment:.3f}",
                      help="Pearson correlation between comment score and sentiment (-1 to 1)")
     
         with col2:
@@ -1824,7 +1824,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 post_engagement,
                 x='Comment Count',
                 y='Avg Sentiment',
-                title="Post Engagement vs Average Sentiment",
+                title="Post engagement vs average sentiment",
                 trendline="ols",  # Changed from lowess to ols (works without statsmodels)
                 color='Avg Sentiment',
                 color_continuous_scale='RdBu',
@@ -1839,19 +1839,19 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             st.plotly_chart(fig_corr2, width='stretch')
     
             corr_engagement_sentiment = post_engagement['Comment Count'].corr(post_engagement['Avg Sentiment'])
-            st.metric("Correlation Coefficient", f"{corr_engagement_sentiment:.3f}",
+            st.metric("Correlation coefficient", f"{corr_engagement_sentiment:.3f}",
                      help="Pearson correlation between post engagement and sentiment (-1 to 1)")
     
         st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Data Export Section
-        st.markdown("### Export Data")
+        st.markdown("### Export data")
         st.markdown("Download the analyzed data in various formats for further analysis.")
     
         col1, col2, col3 = st.columns(3)
     
         with col1:
-            st.markdown("#### Comments Data")
+            st.markdown("#### Comments data")
             # Prepare clean export dataframe
             export_df_comments = df_comments[[
                 'comment_id', 'comment_text', 'comment_author', 'comment_score',
@@ -1861,7 +1861,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
             csv_comments = export_df_comments.to_csv(index=False)
             st.download_button(
-                label="Download Comments CSV",
+                label="Download comments CSV",
                 data=csv_comments,
                 file_name=f"tesla_sentiment_comments_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 mime="text/csv",
@@ -1869,7 +1869,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             )
     
         with col2:
-            st.markdown("#### Posts Data")
+            st.markdown("#### Posts data")
             export_df_posts = df_posts[[
                 'post_id', 'post_title', 'post_url', 'post_score',
                 'post_upvote_ratio', 'post_num_comments', 'post_author'
@@ -1877,7 +1877,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
             csv_posts = export_df_posts.to_csv(index=False)
             st.download_button(
-                label="Download Posts CSV",
+                label="Download posts CSV",
                 data=csv_posts,
                 file_name=f"tesla_sentiment_posts_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 mime="text/csv",
@@ -1885,7 +1885,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             )
     
         with col3:
-            st.markdown("#### Summary Report")
+            st.markdown("#### Summary report")
     
             # Create comprehensive summary
             summary_report = {
@@ -1919,7 +1919,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
             json_report = json.dumps(summary_report, indent=2)
             st.download_button(
-                label="Download JSON Report",
+                label="Download JSON report",
                 data=json_report,
                 file_name=f"tesla_sentiment_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
                 mime="application/json",
@@ -1929,20 +1929,20 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Raw Data Preview
-        st.markdown("### Data Preview")
+        st.markdown("### Data preview")
     
         preview_option = st.selectbox(
             "Select data to preview:",
-            ["Comments with Sentiment", "Posts Summary", "Sentiment by Date"]
+            ["Comments with sentiment", "Posts summary", "Sentiment by date"]
         )
     
-        if preview_option == "Comments with Sentiment":
+        if preview_option == "Comments with sentiment":
             st.dataframe(
                 export_df_comments.head(100),
                 width='stretch',
                 hide_index=True
             )
-        elif preview_option == "Posts Summary":
+        elif preview_option == "Posts summary":
             st.dataframe(
                 post_sentiment[[
                     'Post Title', 'Avg Sentiment', 'sentiment_category',
@@ -1951,7 +1951,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 width='stretch',
                 hide_index=True
             )
-        else:  # Sentiment by Date
+        else:  # Sentiment by date
             sentiment_by_date_detailed = df_comments.groupby('comment_date').agg({
                 'vader_compound': ['mean', 'std', 'count'],
                 'sentiment_category': lambda x: (x == 'Positive').sum() / len(x) * 100
