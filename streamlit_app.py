@@ -1972,8 +1972,8 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             Análisis de sentiment en tiempo real usando VADER (NLTK) y visualización avanzada con Plotly
         </p>
         <div class="footer-links">
-            <a href="https://github.com" target="_blank">📁 GitHub</a> •
-            <a href="https://linkedin.com" target="_blank">💼 LinkedIn</a> •
+            <a href="https://github.com/jburguera/reddit-sentiment-dashboard-streamlit" target="_blank">📁 GitHub</a> •
+            <a href="https://www.linkedin.com/in/jburguera/" target="_blank">💼 LinkedIn</a> •
             <a href="https://www.reddit.com/r/{}" target="_blank">🔗 r/{}</a>
         </div>
         <div class="footer-info">
