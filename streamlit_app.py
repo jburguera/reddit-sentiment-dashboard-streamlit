@@ -803,13 +803,13 @@ with st.sidebar:
 
     # Search/Analyze button - main action
     st.markdown("### Ready to Analyze?")
-    analyze_button = st.button("🔍 Analyze Sentiment", type="primary", use_container_width=True)
+    analyze_button = st.button("🔍 Analyze Sentiment", type="primary", width='stretch')
 
     st.markdown("---")
 
     # Manual refresh button (only show if data has been loaded before)
     if 'data_loaded' in st.session_state and st.session_state['data_loaded']:
-        refresh_data = st.button("🔄 Refresh Data", key="refresh_data", use_container_width=True)
+        refresh_data = st.button("🔄 Refresh Data", key="refresh_data", width='stretch')
     else:
         refresh_data = False
 
@@ -961,7 +961,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 margin=dict(t=50, b=20, l=20, r=20)
             )
             
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.plotly_chart(fig_pie, width='stretch')
         
         with col2:
             # Sentiment score histogram
@@ -984,7 +984,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 margin=dict(t=50, b=20, l=20, r=20)
             )
             
-            st.plotly_chart(fig_hist, use_container_width=True)
+            st.plotly_chart(fig_hist, width='stretch')
         
         # Combined violin and box plot
         st.markdown("### Sentiment Score Distribution by Category")
@@ -1007,7 +1007,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             title_font=dict(size=16)
         )
         
-        st.plotly_chart(fig_violin, use_container_width=True)
+        st.plotly_chart(fig_violin, width='stretch')
     
     # Tab 2: Temporal Analysis
     with tabs[1]:
@@ -1037,7 +1037,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             title_font=dict(size=16)
         )
         
-        st.plotly_chart(fig_line, use_container_width=True)
+        st.plotly_chart(fig_line, width='stretch')
         
         # Group data by hour
         sentiment_by_hour = df_comments.groupby('comment_hour')['vader_compound'].mean().reset_index()
@@ -1062,7 +1062,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             coloraxis_colorbar=dict(title="Sentiment")
         )
         
-        st.plotly_chart(fig_hour, use_container_width=True)
+        st.plotly_chart(fig_hour, width='stretch')
         
         # Volume of comments over time
         comment_volume = df_comments.groupby('comment_date').size().reset_index()
@@ -1083,7 +1083,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             title_font=dict(size=16)
         )
         
-        st.plotly_chart(fig_volume, use_container_width=True)
+        st.plotly_chart(fig_volume, width='stretch')
     
     # Tab 3: Top Posts
     with tabs[2]:
@@ -1242,7 +1242,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                         height=400,
                         margin=dict(l=10, r=10, t=30, b=10)
                     )
-                    st.plotly_chart(fig_pos_bar, use_container_width=True)
+                    st.plotly_chart(fig_pos_bar, width='stretch')
     
         with col2:
             st.markdown("#### Most Common in Neutral")
@@ -1264,7 +1264,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                         height=400,
                         margin=dict(l=10, r=10, t=30, b=10)
                     )
-                    st.plotly_chart(fig_neu_bar, use_container_width=True)
+                    st.plotly_chart(fig_neu_bar, width='stretch')
     
         with col3:
             st.markdown("#### Most Common in Negative")
@@ -1286,7 +1286,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                         height=400,
                         margin=dict(l=10, r=10, t=30, b=10)
                     )
-                    st.plotly_chart(fig_neg_bar, use_container_width=True)
+                    st.plotly_chart(fig_neg_bar, width='stretch')
     
         st.markdown("---")
     
@@ -1376,21 +1376,22 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     
         with col1:
             st.markdown("#### Sentiment Score Statistics")
-            sentiment_stats = df_comments['vader_compound'].describe()
+            # Calculate statistics directly to avoid pandas version issues
+            vader_scores = df_comments['vader_compound']
             stats_df = pd.DataFrame({
                 'Statistic': ['Count', 'Mean', 'Std Dev', 'Min', '25%', '50% (Median)', '75%', 'Max'],
                 'Value': [
-                    f"{sentiment_stats['count']:.0f}",
-                    f"{sentiment_stats['mean']:.4f}",
-                    f"{sentiment_stats['std']:.4f}",
-                    f"{sentiment_stats['min']:.4f}",
-                    f"{sentiment_stats['25%']:.4f}",
-                    f"{sentiment_stats['50%']:.4f}",
-                    f"{sentiment_stats['75%']:.4f}",
-                    f"{sentiment_stats['max']:.4f}"
+                    f"{vader_scores.count():.0f}",
+                    f"{vader_scores.mean():.4f}",
+                    f"{vader_scores.std():.4f}",
+                    f"{vader_scores.min():.4f}",
+                    f"{vader_scores.quantile(0.25):.4f}",
+                    f"{vader_scores.median():.4f}",
+                    f"{vader_scores.quantile(0.75):.4f}",
+                    f"{vader_scores.max():.4f}"
                 ]
             })
-            st.dataframe(stats_df, hide_index=True, use_container_width=True)
+            st.dataframe(stats_df, hide_index=True, width='stretch')
     
         with col2:
             st.markdown("#### Comment Activity Statistics")
@@ -1419,7 +1420,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                     f"{df_comments.groupby('comment_date').size().idxmax()}"
                 ]
             })
-            st.dataframe(activity_df, hide_index=True, use_container_width=True)
+            st.dataframe(activity_df, hide_index=True, width='stretch')
     
         st.markdown("---")
     
@@ -1450,7 +1451,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 yaxis_title="Sentiment Score",
                 height=400
             )
-            st.plotly_chart(fig_corr1, use_container_width=True)
+            st.plotly_chart(fig_corr1, width='stretch')
     
             # Calculate correlation
             corr_score_sentiment = df_comments['comment_score'].corr(df_comments['vader_compound'])
@@ -1481,7 +1482,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 yaxis_title="Average Sentiment Score",
                 height=400
             )
-            st.plotly_chart(fig_corr2, use_container_width=True)
+            st.plotly_chart(fig_corr2, width='stretch')
     
             corr_engagement_sentiment = post_engagement['Comment Count'].corr(post_engagement['Avg Sentiment'])
             st.metric("Correlation Coefficient", f"{corr_engagement_sentiment:.3f}",
@@ -1584,7 +1585,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         if preview_option == "Comments with Sentiment":
             st.dataframe(
                 export_df_comments.head(100),
-                use_container_width=True,
+                width='stretch',
                 hide_index=True
             )
         elif preview_option == "Posts Summary":
@@ -1593,7 +1594,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                     'Post Title', 'Avg Sentiment', 'sentiment_category',
                     'Comment Count', 'post_score', 'post_upvote_ratio'
                 ]].head(50),
-                use_container_width=True,
+                width='stretch',
                 hide_index=True
             )
         else:  # Sentiment by Date
@@ -1604,7 +1605,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             sentiment_by_date_detailed.columns = ['Date', 'Avg Sentiment', 'Std Dev', 'Comment Count', 'Positive %']
             st.dataframe(
                 sentiment_by_date_detailed,
-                use_container_width=True,
+                width='stretch',
                 hide_index=True
             )
     
