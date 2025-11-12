@@ -1,295 +1,244 @@
-# Tesla Sentiment Dashboard - Reddit Analytics
+# Tesla Sentiment Dashboard
 
-A comprehensive, interactive dashboard for analyzing sentiment towards Tesla on Reddit using advanced NLP techniques and real-time data visualization.
+What does Reddit say about Tesla? This dashboard analyzes thousands of comments in real time to measure community sentiment toward the brand, identify trends, and discover what people are talking about when they mention Tesla.
 
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![NLTK](https://img.shields.io/badge/NLTK-Natural%20Language%20Processing-green?style=for-the-badge)
 
-## Features
+## Why this project exists
 
-### Core Functionality
+Social media is a thermometer of public sentiment. Reddit, with its active communities and candid debates, offers a privileged window into how people perceive Tesla: from enthusiasts celebrating every innovation to critics questioning each decision.
 
-- **Real-time Reddit Data Collection**: Fetches posts and comments from any subreddit (default: r/TeslaMotors)
-- **VADER Sentiment Analysis**: Uses NLTK's VADER for accurate sentiment scoring
-- **Interactive Visualizations**: Beautiful, interactive charts using Plotly and Matplotlib
-- **Topic Modeling**: LDA-based topic discovery to identify discussion themes
-- **Word Cloud Analysis**: Visual representation of most common words by sentiment
-- **Trend Detection**: Automatic detection of sentiment trends over time
-- **Data Export**: Export analyzed data in CSV and JSON formats
+This dashboard automates that analysis. Instead of manually reading hundreds of comments, it uses natural language processing techniques to classify them, detect patterns, and present results in visualizations that tell the story.
 
-### Dashboard Sections
+## What it actually does
 
-#### 1. Sentiment Distribution
-- Pie chart showing distribution of positive/neutral/negative comments
-- Histogram of sentiment scores
-- Violin plots for detailed score distribution
-- Summary metrics cards
+### Measures sentiment (positive, negative, or neutral)
+Each comment goes through VADER, an algorithm specialized in analyzing social media text. VADER assigns a score between -1 (very negative) and +1 (very positive). The dashboard automatically classifies comments and displays:
+- Pie charts showing the percentage of each category
+- Histograms showing score distribution
+- Visual comparisons to understand the overall balance
 
-#### 2. Temporal Analysis
-- Sentiment trends over time with threshold indicators
-- Hourly sentiment patterns
-- Comment volume tracking
-- Interactive time-series visualizations
+### Detects temporal trends
+Is sentiment improving or worsening? The dashboard tracks evolution over time:
+- Line graphs showing day-to-day changes
+- Analysis by hour to identify when conversation is most active
+- Trend indicators that signal whether sentiment is rising, falling, or holding steady
 
-#### 3. Top Posts Analysis
-- Most positive posts with links
-- Most negative posts with detailed metrics
-- Most discussed posts
-- Engagement metrics (upvotes, comments, ratios)
+### Identifies conversation topics
+Using topic modeling (a technique that groups related words), the dashboard automatically discovers what people are talking about:
+- Are they discussing autopilot?
+- Talking about prices and stock?
+- Focusing on build quality?
 
-#### 4. Word Analysis
-- Word clouds by sentiment category (Positive, Neutral, Negative)
-- Top 15 most common words per sentiment
-- Interactive topic modeling with pyLDAvis
-- Coherence score for topic quality
-- Dynamic topic discovery (2-10 topics)
+### Highlights what matters most
+The dashboard sorts and filters to show:
+- Posts that generated the most debate
+- The most positive and most negative comments
+- Words most repeated in each sentiment category
 
-#### 5. Data Export & Advanced Insights
-- **Sentiment Trend Indicators**: Real-time trend direction with percentage changes
-- **Statistical Summary**: Comprehensive statistics (mean, median, std dev, quartiles)
-- **Correlation Analysis**:
-  - Sentiment vs Comment Score
-  - Post Engagement vs Sentiment
-  - Interactive scatter plots with trendlines
-- **Data Export Options**:
-  - Comments CSV with full sentiment data
-  - Posts CSV with metadata
-  - JSON report with comprehensive analytics
-- **Data Preview**: Browse comments, posts, and aggregated data
+### Exports everything for additional analysis
+All data can be downloaded in standard formats (CSV and JSON) for anyone who wants to dig deeper or create their own analyses.
 
-### Customization Options
+## How to install it
 
-- **Subreddit Selection**: Analyze any subreddit
-- **Post Filtering**: Adjust number of posts (50-500) and minimum comments
-- **Time Periods**: Day, week, month, year, or all-time
-- **Color Themes**: Tesla, Viridis, Plasma, Inferno, Magma
-- **Chart Styles**: Multiple seaborn style options
-- **Topic Count**: Configurable topic modeling (2-10 topics)
-- **Auto-Refresh**: Automatic data updates (30 min to 24 hours)
+### What you need
 
-### Enhanced Features
+- Python 3.8 or newer
+- A Reddit account (free) to access their API
+- 10 minutes to set everything up
 
-- **Splash Screen**: Beautiful loading screen on first launch
-- **Progress Tracking**: Real-time progress bars for data fetching and analysis
-- **Error Handling**: Robust error handling with helpful messages
-- **Caching**: Smart caching for improved performance (15-minute TTL)
-- **Responsive Design**: Mobile-friendly layout
-- **Custom CSS**: Tesla-branded design with custom colors
+### Installation steps
 
-## Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Reddit API credentials (free)
-
-### Setup Instructions
-
-1. **Clone the repository**:
+**1. Download the code**
 ```bash
-git clone https://github.com/yourusername/reddit-sentiment-dashboard-streamlit.git
+git clone https://github.com/jburguera/reddit-sentiment-dashboard-streamlit.git
 cd reddit-sentiment-dashboard-streamlit
 ```
 
-2. **Install dependencies**:
+**2. Install required libraries**
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Create Reddit API credentials**:
-   - Go to https://www.reddit.com/prefs/apps
-   - Click "Create App" or "Create Another App"
-   - Select "script" as the app type
-   - Fill in the required fields
-   - Note your `client_id` and `client_secret`
+**3. Get your Reddit credentials**
 
-4. **Create credentials file**:
-Create a file named `reddit_credentials.txt` in the project directory with the following format:
+Reddit requires you to identify yourself to use their API (this is how they control usage and prevent abuse):
+
+- Go to https://www.reddit.com/prefs/apps
+- Click "Create App" or "Create Another App"
+- Fill out the form:
+  - **name**: whatever you want (e.g., "sentiment-analyzer")
+  - **type**: select "script"
+  - **redirect uri**: enter http://localhost:8080 (required but not used)
+- Once created, you'll see two important codes:
+  - The **client_id** (appears just below the name)
+  - The **client_secret** (appears labeled as "secret")
+
+**4. Create your credentials file**
+
+In the project folder, create a file named `reddit_credentials.txt` with this content:
+
 ```
 CLIENT_ID=your_client_id_here
 CLIENT_SECRET=your_client_secret_here
-USER_AGENT=your_app_name/1.0
+USER_AGENT=tesla-sentiment-dashboard/1.0
 ```
 
-5. **Run the dashboard**:
+Replace the values with the codes you got from Reddit.
+
+**5. Start the dashboard**
 ```bash
 streamlit run streamlit_app.py
 ```
 
-The dashboard will open in your default browser at `http://localhost:8501`
+The browser will open automatically at `http://localhost:8501`
 
-## Usage
+## How to use it
 
-### Basic Usage
+**Basic configuration**
 
-1. **Configure Settings** (Sidebar):
-   - Enter the subreddit name (without r/)
-   - Adjust the number of posts to fetch
-   - Set minimum comments filter
-   - Select time period
+The left sidebar has all the controls:
 
-2. **Customize Visualization**:
-   - Choose color theme
-   - Select chart style
-   - Set number of topics for modeling
+1. **Subreddit**: By default it analyzes r/TeslaMotors, but you can enter any other (without the "r/")
+2. **Number of posts**: More posts means more data but also longer wait times (recommended: 200)
+3. **Minimum comments**: Filters posts with little activity (recommended: 150)
+4. **Time period**: Analyzes recent posts (day, week, month...)
 
-3. **Enable Auto-Refresh** (Optional):
-   - Toggle auto-refresh
-   - Select refresh interval
-   - Monitor next refresh time
+**Analysis**
 
-4. **Explore Tabs**:
-   - Navigate through different analysis sections
-   - Interact with visualizations
-   - Export data as needed
+Click "🔍 Analyze Sentiment" and wait. The dashboard will keep you informed of progress:
+- Downloading posts from Reddit
+- Analyzing sentiment with VADER
+- Preprocessing text for advanced analysis
 
-### Advanced Usage
+Once finished, you'll have access to five main sections with all the information.
 
-#### Topic Modeling
-The dashboard uses Latent Dirichlet Allocation (LDA) to discover topics:
-- Adjust the number of topics in the sidebar (2-10)
-- Higher coherence scores (0.4-0.7) indicate better topics
-- Click on topics in the interactive visualization to explore
+## How it works under the hood
 
-#### Trend Analysis
-The sentiment trend detector analyzes rolling averages:
-- "Up" trend: >5% increase in sentiment
-- "Down" trend: >5% decrease in sentiment
-- "Stable": Changes within ±5%
+### Text processing
 
-#### Data Export
-Export options include:
-- **Comments CSV**: All comments with sentiment scores
-- **Posts CSV**: Post metadata and metrics
-- **JSON Report**: Comprehensive analysis summary
+Before analyzing, the dashboard cleans and prepares each comment:
 
-## Dependencies
+1. **Normalization**: Everything to lowercase so "Tesla" and "tesla" are treated the same
+2. **Cleaning**: Removes URLs, mentions, and special characters that don't add meaning
+3. **Tokenization**: Divides text into individual words
+4. **Filtering**: Removes stop words (the, a, of, that...) and very common Reddit terms (edit, deleted...)
+5. **Lemmatization**: Reduces words to their root (buying → buy, cars → car)
 
-```
-streamlit>=1.22.0       # Web framework
-matplotlib              # Static plotting
-seaborn                 # Statistical visualization
-pandas                  # Data manipulation
-praw                    # Reddit API wrapper
-nltk>=3.7              # NLP toolkit
-wordcloud              # Word cloud generation
-gensim                 # Topic modeling
-pyLDAvis               # LDA visualization
-plotly                 # Interactive plots
-Pillow                 # Image processing
-```
+This process improves analysis quality by focusing on the actual content of messages.
 
-## Project Structure
+### Sentiment analysis
+
+VADER (Valence Aware Dictionary and Sentiment Reasoner) is especially good with informal social media text because:
+
+- It understands capitalization as emphasis ("AMAZING" carries more weight than "amazing")
+- Recognizes emojis and emoticons
+- Detects negations ("not bad" vs "bad")
+- Handles intensifiers ("very good" vs "good")
+
+The result is a score that the dashboard classifies like this:
+- **Positive**: ≥ 0.05
+- **Neutral**: between -0.05 and 0.05
+- **Negative**: ≤ -0.05
+
+### Topic modeling
+
+This is perhaps the most sophisticated part. The dashboard uses LDA (Latent Dirichlet Allocation), an algorithm that:
+
+1. Groups words that tend to appear together
+2. Identifies thematic patterns without human supervision
+3. Assigns each comment to one or several topics
+
+For example, it might automatically discover there's a group of comments about "price, stock, investment, market" (financial topic) and another about "battery, range, charging, miles" (technical topic).
+
+The "coherence score" measures how interpretable the discovered topics are. Values between 0.4 and 0.7 are good.
+
+### Trend detection
+
+The dashboard calculates 3-day moving averages to smooth out fluctuations:
+
+- **Upward trend**: sentiment increased more than 5%
+- **Downward trend**: sentiment fell more than 5%
+- **Stable**: changes less than 5%
+
+## Project structure
 
 ```
 reddit-sentiment-dashboard-streamlit/
-├── streamlit_app.py           # Main application file
-├── requirements.txt           # Python dependencies
-├── reddit_credentials.txt     # API credentials (create this)
-├── README.md                  # This file
-├── LICENSE                    # License file
-└── nltk_data/                # Auto-created NLTK data directory
+├── streamlit_app.py           # All dashboard logic
+├── requirements.txt           # Required libraries (Streamlit, NLTK, etc.)
+├── reddit_credentials.txt     # Your credentials (DO NOT upload to git)
+├── README.md                  # This guide
+└── nltk_data/                 # Language data (downloads automatically)
 ```
 
-## Features in Detail
+## Libraries it uses
 
-### NLP Pipeline
+- **Streamlit**: Converts Python scripts into interactive web applications
+- **PRAW**: Python client for Reddit's API
+- **NLTK**: Specialized library for natural language processing
+- **VADER**: Sentiment analysis algorithm included in NLTK
+- **Gensim**: Efficient implementation of LDA for topic modeling
+- **Plotly**: Interactive charts (zoom, hover, export)
+- **Pandas**: Manipulation and analysis of tabular data
+- **WordCloud**: Generation of visual word clouds
 
-1. **Text Preprocessing**:
-   - Lowercase conversion
-   - URL and special character removal
-   - Tokenization
-   - Stopword removal (custom + Reddit-specific)
-   - Lemmatization
+## Troubleshooting common issues
 
-2. **Sentiment Analysis**:
-   - VADER (Valence Aware Dictionary and sEntiment Reasoner)
-   - Compound score: -1 (most negative) to +1 (most positive)
-   - Classification: Positive (≥0.05), Neutral (-0.05 to 0.05), Negative (≤-0.05)
+### "NLTK resources not found"
 
-3. **Topic Modeling**:
-   - LDA with automatic parameter tuning
-   - Coherence score calculation (C_v metric)
-   - Interactive pyLDAvis visualization
-   - Extreme value filtering for better topics
+The app tries to download what's needed automatically, but if it fails:
+```bash
+python -c "import nltk; nltk.download('vader_lexicon'); nltk.download('stopwords')"
+```
 
-### Performance Optimizations
+### "Error: 429 - Rate limit exceeded"
 
-- **Caching**: Functions cached with appropriate TTL
-- **Progress Tracking**: Updates every 10 comments for smooth UX
-- **Lazy Loading**: Data fetched only when needed
-- **Efficient Processing**: Vectorized pandas operations
+Reddit's API has usage limits. If you see this error:
+- Reduce the number of posts to analyze
+- Wait 5-10 minutes before trying again
+- Verify your credentials are correct
 
-## Troubleshooting
+### "Not enough documents for topic modeling"
 
-### Common Issues
+Topic modeling needs at least 10 comments with content. Solution:
+- Analyze more posts
+- Reduce minimum comments per post
+- Choose a more active subreddit
 
-1. **NLTK Resources Not Found**:
-   - The app automatically downloads required NLTK data
-   - If issues persist, manually run: `python -c "import nltk; nltk.download('all')"`
+### The app is very slow or runs out of memory
 
-2. **Reddit API Rate Limiting**:
-   - Reduce number of posts to fetch
-   - Increase minimum comments filter
-   - Wait before making new requests
+Analyzing thousands of comments consumes resources:
+- Reduce post limit to 100-150
+- Close other heavy applications
+- In the Streamlit menu (top right), select "Clear cache"
 
-3. **Topic Modeling Errors**:
-   - Ensure you have at least 10 valid documents
-   - Try fetching more posts
-   - Reduce minimum comments filter
-   - Adjust number of topics
+## Possible future improvements
 
-4. **Memory Issues**:
-   - Reduce post limit
-   - Clear cache: Settings → Clear cache
-   - Restart the Streamlit app
+This is a living project. Some ideas to expand it:
 
-## Contributing
+- Add aspect-based sentiment analysis (price, quality, service...)
+- Compare sentiment across different subreddits
+- Detect bots or suspicious accounts
+- Sentiment analysis by user (who's most positive/negative)
+- Automatic alerts when there are sudden changes
+- Export automatic PDF reports
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+## Credits and acknowledgments
 
-### Development Guidelines
+This project wouldn't be possible without:
 
-1. Follow PEP 8 style guide
-2. Add docstrings to functions
-3. Test changes thoroughly
-4. Update README if adding features
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **NLTK**: Natural Language Toolkit for NLP functionality
-- **PRAW**: Python Reddit API Wrapper
-- **Streamlit**: Amazing framework for data apps
-- **Plotly**: Interactive visualization library
-- **Gensim**: Topic modeling library
-
-## Future Enhancements
-
-Potential features for future versions:
-- [ ] Multi-subreddit comparison
-- [ ] Historical data tracking and storage
-- [ ] Named Entity Recognition (NER)
-- [ ] Aspect-based sentiment analysis
-- [ ] Email alerts for sentiment changes
-- [ ] API endpoint for external integrations
-- [ ] Machine learning model fine-tuning
-- [ ] Competitor comparison (Tesla vs other EVs)
-- [ ] Social network analysis
-- [ ] Export to PowerPoint/PDF reports
-
-## Screenshots
-
-
-
-## Contact
-
-For questions, suggestions, or issues, please open an issue on GitHub.
+- **NLTK**: The library that democratized natural language processing
+- **PRAW**: For making Reddit's API accessible
+- **Streamlit**: For simplifying the creation of interactive dashboards
+- **The Reddit community**: For generating rich conversations to analyze
 
 ---
 
-**Made with ❤️ using Streamlit and Python**
+**License**: MIT (use it, modify it, share it freely)
+
+**Built with**: Python 3.11, Streamlit, lots of coffee, and curiosity about what the internet thinks of Tesla
+
+**Author**: [Javier Burguera](https://www.linkedin.com/in/jburguera/) | [GitHub](https://github.com/jburguera/reddit-sentiment-dashboard-streamlit)
