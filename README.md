@@ -1,295 +1,195 @@
-# Tesla Sentiment Dashboard - Reddit Analytics
+# Tesla Sentiment Dashboard
 
-A comprehensive, interactive dashboard for analyzing sentiment towards Tesla on Reddit using advanced NLP techniques and real-time data visualization.
+Dashboard interactivo para analizar el sentimiento sobre Tesla en Reddit usando procesamiento de lenguaje natural y visualización de datos.
 
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![NLTK](https://img.shields.io/badge/NLTK-Natural%20Language%20Processing-green?style=for-the-badge)
 
-## Features
+## Características principales
 
-### Core Functionality
+- Recopilación de datos de Reddit desde cualquier subreddit
+- Análisis de sentimientos con VADER (NLTK)
+- Gráficos interactivos con Plotly y Matplotlib
+- Modelado de tópicos con LDA para descubrir temas de conversación
+- Nubes de palabras segmentadas por sentimiento
+- Detección automática de tendencias
+- Exportación de datos en CSV y JSON
 
-- **Real-time Reddit Data Collection**: Fetches posts and comments from any subreddit (default: r/TeslaMotors)
-- **VADER Sentiment Analysis**: Uses NLTK's VADER for accurate sentiment scoring
-- **Interactive Visualizations**: Beautiful, interactive charts using Plotly and Matplotlib
-- **Topic Modeling**: LDA-based topic discovery to identify discussion themes
-- **Word Cloud Analysis**: Visual representation of most common words by sentiment
-- **Trend Detection**: Automatic detection of sentiment trends over time
-- **Data Export**: Export analyzed data in CSV and JSON formats
+## Qué incluye
 
-### Dashboard Sections
+### Distribución de sentimientos
+- Gráfico circular con distribución positiva/neutral/negativa
+- Histograma de puntuaciones
+- Violin plots para ver la distribución en detalle
 
-#### 1. Sentiment Distribution
-- Pie chart showing distribution of positive/neutral/negative comments
-- Histogram of sentiment scores
-- Violin plots for detailed score distribution
-- Summary metrics cards
+### Análisis temporal
+- Tendencias de sentimiento en el tiempo
+- Patrones por hora del día
+- Volumen de comentarios
 
-#### 2. Temporal Analysis
-- Sentiment trends over time with threshold indicators
-- Hourly sentiment patterns
-- Comment volume tracking
-- Interactive time-series visualizations
+### Posts destacados
+- Posts más positivos y negativos con enlaces directos
+- Posts más discutidos
+- Métricas de engagement (upvotes, comentarios, ratios)
 
-#### 3. Top Posts Analysis
-- Most positive posts with links
-- Most negative posts with detailed metrics
-- Most discussed posts
-- Engagement metrics (upvotes, comments, ratios)
+### Análisis de palabras
+- Nubes de palabras por cada tipo de sentimiento
+- Top 15 palabras más comunes
+- Modelado de tópicos interactivo
+- Puntuación de coherencia para validar la calidad
 
-#### 4. Word Analysis
-- Word clouds by sentiment category (Positive, Neutral, Negative)
-- Top 15 most common words per sentiment
-- Interactive topic modeling with pyLDAvis
-- Coherence score for topic quality
-- Dynamic topic discovery (2-10 topics)
+### Exportación de datos
+- Descargar comentarios en CSV
+- Descargar posts en CSV
+- Reporte JSON completo con todas las métricas
 
-#### 5. Data Export & Advanced Insights
-- **Sentiment Trend Indicators**: Real-time trend direction with percentage changes
-- **Statistical Summary**: Comprehensive statistics (mean, median, std dev, quartiles)
-- **Correlation Analysis**:
-  - Sentiment vs Comment Score
-  - Post Engagement vs Sentiment
-  - Interactive scatter plots with trendlines
-- **Data Export Options**:
-  - Comments CSV with full sentiment data
-  - Posts CSV with metadata
-  - JSON report with comprehensive analytics
-- **Data Preview**: Browse comments, posts, and aggregated data
+## Instalación
 
-### Customization Options
+### Requisitos
 
-- **Subreddit Selection**: Analyze any subreddit
-- **Post Filtering**: Adjust number of posts (50-500) and minimum comments
-- **Time Periods**: Day, week, month, year, or all-time
-- **Color Themes**: Tesla, Viridis, Plasma, Inferno, Magma
-- **Chart Styles**: Multiple seaborn style options
-- **Topic Count**: Configurable topic modeling (2-10 topics)
-- **Auto-Refresh**: Automatic data updates (30 min to 24 hours)
+- Python 3.8 o superior
+- Credenciales de API de Reddit (gratis)
 
-### Enhanced Features
+### Pasos
 
-- **Splash Screen**: Beautiful loading screen on first launch
-- **Progress Tracking**: Real-time progress bars for data fetching and analysis
-- **Error Handling**: Robust error handling with helpful messages
-- **Caching**: Smart caching for improved performance (15-minute TTL)
-- **Responsive Design**: Mobile-friendly layout
-- **Custom CSS**: Tesla-branded design with custom colors
-
-## Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Reddit API credentials (free)
-
-### Setup Instructions
-
-1. **Clone the repository**:
+1. Clonar el repositorio:
 ```bash
 git clone https://github.com/yourusername/reddit-sentiment-dashboard-streamlit.git
 cd reddit-sentiment-dashboard-streamlit
 ```
 
-2. **Install dependencies**:
+2. Instalar dependencias:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Create Reddit API credentials**:
-   - Go to https://www.reddit.com/prefs/apps
-   - Click "Create App" or "Create Another App"
-   - Select "script" as the app type
-   - Fill in the required fields
-   - Note your `client_id` and `client_secret`
+3. Obtener credenciales de Reddit:
+   - Ir a https://www.reddit.com/prefs/apps
+   - Click en "Create App"
+   - Seleccionar "script" como tipo de app
+   - Anotar el `client_id` y `client_secret`
 
-4. **Create credentials file**:
-Create a file named `reddit_credentials.txt` in the project directory with the following format:
+4. Crear el archivo `reddit_credentials.txt`:
 ```
-CLIENT_ID=your_client_id_here
-CLIENT_SECRET=your_client_secret_here
-USER_AGENT=your_app_name/1.0
+CLIENT_ID=tu_client_id_aqui
+CLIENT_SECRET=tu_client_secret_aqui
+USER_AGENT=nombre_de_tu_app/1.0
 ```
 
-5. **Run the dashboard**:
+5. Ejecutar:
 ```bash
 streamlit run streamlit_app.py
 ```
 
-The dashboard will open in your default browser at `http://localhost:8501`
+El dashboard se abrirá en `http://localhost:8501`
 
-## Usage
+## Uso
 
-### Basic Usage
+1. Configurar parámetros en el sidebar:
+   - Elegir el subreddit (sin el r/)
+   - Número de posts a analizar
+   - Filtro de mínimo de comentarios
+   - Período de tiempo
 
-1. **Configure Settings** (Sidebar):
-   - Enter the subreddit name (without r/)
-   - Adjust the number of posts to fetch
-   - Set minimum comments filter
-   - Select time period
+2. Click en "🔍 Analyze Sentiment"
 
-2. **Customize Visualization**:
-   - Choose color theme
-   - Select chart style
-   - Set number of topics for modeling
+3. Explorar las visualizaciones y exportar datos si es necesario
 
-3. **Enable Auto-Refresh** (Optional):
-   - Toggle auto-refresh
-   - Select refresh interval
-   - Monitor next refresh time
+## Modelado de tópicos
 
-4. **Explore Tabs**:
-   - Navigate through different analysis sections
-   - Interact with visualizations
-   - Export data as needed
+El dashboard usa LDA (Latent Dirichlet Allocation) para descubrir temas automáticamente:
+- Ajusta el número de tópicos (2-10)
+- Puntuaciones de coherencia entre 0.4-0.7 indican buenos resultados
+- Click en los tópicos en la visualización interactiva para explorar
 
-### Advanced Usage
+## Detección de tendencias
 
-#### Topic Modeling
-The dashboard uses Latent Dirichlet Allocation (LDA) to discover topics:
-- Adjust the number of topics in the sidebar (2-10)
-- Higher coherence scores (0.4-0.7) indicate better topics
-- Click on topics in the interactive visualization to explore
+El análisis de tendencias usa promedios móviles:
+- "Up": >5% de aumento en sentimiento
+- "Down": >5% de caída en sentimiento
+- "Stable": cambios dentro de ±5%
 
-#### Trend Analysis
-The sentiment trend detector analyzes rolling averages:
-- "Up" trend: >5% increase in sentiment
-- "Down" trend: >5% decrease in sentiment
-- "Stable": Changes within ±5%
+## Dependencias
 
-#### Data Export
-Export options include:
-- **Comments CSV**: All comments with sentiment scores
-- **Posts CSV**: Post metadata and metrics
-- **JSON Report**: Comprehensive analysis summary
+- streamlit - Framework web
+- matplotlib - Gráficos estáticos
+- seaborn - Visualización estadística
+- pandas - Manipulación de datos
+- praw - API de Reddit
+- nltk - Análisis de sentimientos
+- wordcloud - Nubes de palabras
+- gensim - Modelado de tópicos
+- pyLDAvis - Visualización LDA
+- plotly - Gráficos interactivos
+- statsmodels - Líneas de tendencia
 
-## Dependencies
-
-```
-streamlit>=1.22.0       # Web framework
-matplotlib              # Static plotting
-seaborn                 # Statistical visualization
-pandas                  # Data manipulation
-praw                    # Reddit API wrapper
-nltk>=3.7              # NLP toolkit
-wordcloud              # Word cloud generation
-gensim                 # Topic modeling
-pyLDAvis               # LDA visualization
-plotly                 # Interactive plots
-Pillow                 # Image processing
-```
-
-## Project Structure
+## Estructura del proyecto
 
 ```
 reddit-sentiment-dashboard-streamlit/
-├── streamlit_app.py           # Main application file
-├── requirements.txt           # Python dependencies
-├── reddit_credentials.txt     # API credentials (create this)
-├── README.md                  # This file
-├── LICENSE                    # License file
-└── nltk_data/                # Auto-created NLTK data directory
+├── streamlit_app.py           # Archivo principal
+├── requirements.txt           # Dependencias
+├── reddit_credentials.txt     # Credenciales (crear este archivo)
+├── README.md
+└── nltk_data/                 # Datos NLTK (se crea automáticamente)
 ```
 
-## Features in Detail
+## Pipeline de procesamiento
 
-### NLP Pipeline
+1. Preprocesamiento de texto:
+   - Convertir a minúsculas
+   - Eliminar URLs y caracteres especiales
+   - Tokenización
+   - Eliminar stopwords (incluyendo palabras específicas de Reddit)
+   - Lemmatización
 
-1. **Text Preprocessing**:
-   - Lowercase conversion
-   - URL and special character removal
-   - Tokenization
-   - Stopword removal (custom + Reddit-specific)
-   - Lemmatization
-
-2. **Sentiment Analysis**:
+2. Análisis de sentimientos:
    - VADER (Valence Aware Dictionary and sEntiment Reasoner)
-   - Compound score: -1 (most negative) to +1 (most positive)
-   - Classification: Positive (≥0.05), Neutral (-0.05 to 0.05), Negative (≤-0.05)
+   - Puntuación compuesta de -1 (muy negativo) a +1 (muy positivo)
+   - Clasificación: Positivo (≥0.05), Neutral (-0.05 a 0.05), Negativo (≤-0.05)
 
-3. **Topic Modeling**:
-   - LDA with automatic parameter tuning
-   - Coherence score calculation (C_v metric)
-   - Interactive pyLDAvis visualization
-   - Extreme value filtering for better topics
+3. Modelado de tópicos:
+   - LDA con ajuste automático de parámetros
+   - Cálculo de coherencia (métrica C_v)
+   - Visualización interactiva
+   - Filtrado de valores extremos
 
-### Performance Optimizations
+## Solución de problemas
 
-- **Caching**: Functions cached with appropriate TTL
-- **Progress Tracking**: Updates every 10 comments for smooth UX
-- **Lazy Loading**: Data fetched only when needed
-- **Efficient Processing**: Vectorized pandas operations
+### Recursos NLTK no encontrados
+La app descarga automáticamente los datos necesarios. Si hay problemas:
+```bash
+python -c "import nltk; nltk.download('all')"
+```
 
-## Troubleshooting
+### Límite de API de Reddit
+- Reducir el número de posts a analizar
+- Aumentar el filtro de mínimo de comentarios
+- Esperar unos minutos antes de hacer nuevas peticiones
 
-### Common Issues
+### Errores de modelado de tópicos
+- Asegúrate de tener al menos 10 documentos válidos
+- Intenta analizar más posts
+- Ajusta el número de tópicos
 
-1. **NLTK Resources Not Found**:
-   - The app automatically downloads required NLTK data
-   - If issues persist, manually run: `python -c "import nltk; nltk.download('all')"`
+### Problemas de memoria
+- Reduce el límite de posts
+- Limpia la caché desde el menú de Streamlit
+- Reinicia la app
 
-2. **Reddit API Rate Limiting**:
-   - Reduce number of posts to fetch
-   - Increase minimum comments filter
-   - Wait before making new requests
+## Licencia
 
-3. **Topic Modeling Errors**:
-   - Ensure you have at least 10 valid documents
-   - Try fetching more posts
-   - Reduce minimum comments filter
-   - Adjust number of topics
+MIT License - ver [LICENSE](LICENSE) para más detalles
 
-4. **Memory Issues**:
-   - Reduce post limit
-   - Clear cache: Settings → Clear cache
-   - Restart the Streamlit app
+## Créditos
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-### Development Guidelines
-
-1. Follow PEP 8 style guide
-2. Add docstrings to functions
-3. Test changes thoroughly
-4. Update README if adding features
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **NLTK**: Natural Language Toolkit for NLP functionality
-- **PRAW**: Python Reddit API Wrapper
-- **Streamlit**: Amazing framework for data apps
-- **Plotly**: Interactive visualization library
-- **Gensim**: Topic modeling library
-
-## Future Enhancements
-
-Potential features for future versions:
-- [ ] Multi-subreddit comparison
-- [ ] Historical data tracking and storage
-- [ ] Named Entity Recognition (NER)
-- [ ] Aspect-based sentiment analysis
-- [ ] Email alerts for sentiment changes
-- [ ] API endpoint for external integrations
-- [ ] Machine learning model fine-tuning
-- [ ] Competitor comparison (Tesla vs other EVs)
-- [ ] Social network analysis
-- [ ] Export to PowerPoint/PDF reports
-
-## Screenshots
-
-
-
-## Contact
-
-For questions, suggestions, or issues, please open an issue on GitHub.
+- NLTK para análisis de lenguaje natural
+- PRAW para la API de Reddit
+- Streamlit para el framework web
+- Plotly para visualizaciones interactivas
+- Gensim para modelado de tópicos
 
 ---
 
-**Made with ❤️ using Streamlit and Python**
+Hecho con Python y Streamlit

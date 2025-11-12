@@ -669,61 +669,61 @@ def auto_refresh_data():
 
 # --- Sidebar ---
 with st.sidebar:
-    st.markdown("## Dashboard Settings")
+    st.markdown("## Configuración")
     st.markdown("---")
-    
+
     # Reddit Configuration
-    st.markdown("### Reddit Data Source")
-    subreddit_name = st.text_input("Subreddit", "TeslaMotors", help="Enter the subreddit name without r/")
-    
+    st.markdown("### Datos de Reddit")
+    subreddit_name = st.text_input("Subreddit", "TeslaMotors", help="Nombre del subreddit (sin r/)")
+
     post_limit = st.slider(
-        "Number of posts to fetch",
+        "Número de posts",
         min_value=50,
         max_value=500,
         value=200,
         step=50,
-        help="More posts means more data but slower loading time"
+        help="Más posts significa más datos pero carga más lenta"
     )
-    
+
     min_comments = st.slider(
-        "Minimum comments per post",
+        "Mínimo de comentarios por post",
         min_value=10,
         max_value=300,
         value=150,
         step=10,
-        help="Filter posts by minimum number of comments"
+        help="Filtrar posts por número mínimo de comentarios"
     )
-    
+
     time_filter = st.selectbox(
-        "Time period",
+        "Período de tiempo",
         ["day", "week", "month", "year", "all"],
         index=1,
         help="Time period for hot posts"
     )
     
     st.markdown("---")
-    
+
     # Visualization Settings
-    st.markdown("### Visualization Settings")
-    
+    st.markdown("### Visualización")
+
     color_theme = st.selectbox(
-        "Color Theme", 
+        "Tema de color",
         ["Tesla", "Viridis", "Plasma", "Inferno", "Magma"],
         index=0
     )
-    
+
     chart_style = st.selectbox(
-        "Chart Style",
+        "Estilo de gráficos",
         ["whitegrid", "darkgrid", "white", "dark", "ticks"],
         index=0
     )
-    
+
     num_topics = st.slider(
-        "Number of topics for topic modeling",
+        "Número de tópicos",
         min_value=2,
         max_value=10,
         value=5,
-        help="More topics will show finer distinctions but may be harder to interpret"
+        help="Más tópicos muestran distinciones más finas pero pueden ser más difíciles de interpretar"
     )
     
     if color_theme == "Tesla":
@@ -744,31 +744,31 @@ with st.sidebar:
         wordcloud_negative_cmap = color_theme.lower()
     
     st.markdown("---")
-    
+
     # Auto-refresh settings
-    st.markdown("### Auto-Refresh Settings")
-    
+    st.markdown("### Actualización automática")
+
     # Initialize auto-refresh state if not exists
     if 'auto_refresh_enabled' not in st.session_state:
         st.session_state['auto_refresh_enabled'] = False
-    
+
     auto_refresh = st.checkbox(
-        "Enable auto-refresh", 
+        "Activar actualización automática",
         value=st.session_state.get('auto_refresh_enabled', False),
-        help="Automatically refresh data at specified intervals"
+        help="Actualizar datos automáticamente en intervalos específicos"
     )
-    
+
     refresh_interval_options = {
-        "30 minutes": 1800,
-        "1 hour": 3600,
-        "3 hours": 10800,
-        "6 hours": 21600,
-        "12 hours": 43200,
-        "24 hours": 86400
+        "30 minutos": 1800,
+        "1 hora": 3600,
+        "3 horas": 10800,
+        "6 horas": 21600,
+        "12 horas": 43200,
+        "24 horas": 86400
     }
-    
+
     refresh_interval_key = st.selectbox(
-        "Refresh interval",
+        "Intervalo de actualización",
         list(refresh_interval_options.keys()),
         index=1,  # Default to 1 hour
         disabled=not auto_refresh
@@ -819,11 +819,11 @@ with st.sidebar:
     st.markdown("Configure the parameters above and click '🔍 Analyze Sentiment' to start.")
 
 # --- Main Content ---
-st.markdown('<p class="main-header">Tesla Sentiment Dashboard</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-header">Dashboard de sentimientos Tesla</p>', unsafe_allow_html=True)
 
 st.markdown("""
-This interactive dashboard analyzes public sentiment towards Tesla on Reddit.
-The analysis uses VADER sentiment analysis from NLTK to categorize comments as positive, negative, or neutral.
+Analiza el sentimiento del público sobre Tesla en Reddit usando análisis de sentimientos VADER (NLTK)
+para clasificar comentarios como positivos, negativos o neutrales.
 """)
 
 # --- Main Process ---
@@ -1625,13 +1625,13 @@ else:
     # Show welcome message when no analysis has been run yet
     st.markdown("""
     <div style="text-align: center; padding: 50px 20px;">
-        <h2 style="color: #E31937;">Welcome to Tesla Sentiment Dashboard</h2>
+        <h2 style="color: #E31937;">Bienvenido al Dashboard de Sentimientos Tesla</h2>
         <p style="font-size: 1.2rem; margin: 30px 0;">
-            Ready to analyze sentiment on Reddit?
+            ¿Listo para analizar el sentimiento en Reddit?
         </p>
         <p style="color: #666; margin: 20px 0;">
-            Configure your analysis parameters in the sidebar, then click the
-            <strong>"🔍 Analyze Sentiment"</strong> button to start.
+            Configura los parámetros en la barra lateral y haz click en
+            <strong>"🔍 Analyze Sentiment"</strong> para empezar.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -1642,46 +1642,46 @@ else:
     with col1:
         st.markdown("""
         <div class="card">
-            <h3>📊 Sentiment Analysis</h3>
-            <p>Analyze thousands of Reddit comments using VADER sentiment analysis to understand public opinion about Tesla.</p>
+            <h3>📊 Análisis de sentimientos</h3>
+            <p>Analiza miles de comentarios de Reddit para entender la opinión pública sobre Tesla usando VADER.</p>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
         <div class="card">
-            <h3>📈 Trend Detection</h3>
-            <p>Track sentiment trends over time and identify shifts in public opinion with visual analytics.</p>
+            <h3>📈 Detección de tendencias</h3>
+            <p>Rastrea cómo evoluciona el sentimiento en el tiempo e identifica cambios con análisis visual.</p>
         </div>
         """, unsafe_allow_html=True)
 
     with col3:
         st.markdown("""
         <div class="card">
-            <h3>💬 Topic Modeling</h3>
-            <p>Discover the main themes and topics being discussed using advanced LDA topic modeling.</p>
+            <h3>💬 Modelado de tópicos</h3>
+            <p>Descubre los temas principales de conversación usando modelado LDA.</p>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("---")
 
     # Instructions
-    st.markdown("### How to Get Started")
+    st.markdown("### Cómo empezar")
     st.markdown("""
-    1. **Configure Parameters** (in sidebar):
-       - Select the subreddit to analyze
-       - Choose how many posts to fetch
-       - Set the time period
-       - Customize colors and themes
+    1. **Configurar parámetros** (en la barra lateral):
+       - Elige el subreddit a analizar
+       - Selecciona cuántos posts descargar
+       - Define el período de tiempo
+       - Personaliza colores y temas
 
-    2. **Start Analysis**:
-       - Click the **"🔍 Analyze Sentiment"** button
-       - Wait for data collection and analysis to complete
+    2. **Iniciar análisis**:
+       - Click en **"🔍 Analyze Sentiment"**
+       - Espera a que se descarguen y analicen los datos
 
-    3. **Explore Results**:
-       - View sentiment metrics and trends
-       - Analyze top posts
-       - Explore word clouds and topic models
-       - Export data for further analysis
+    3. **Explorar resultados**:
+       - Ver métricas y tendencias de sentimiento
+       - Analizar los posts más destacados
+       - Explorar nubes de palabras y modelos de tópicos
+       - Exportar datos para análisis adicional
     """)
 
