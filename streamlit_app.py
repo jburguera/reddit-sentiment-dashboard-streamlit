@@ -150,11 +150,18 @@ st.markdown("""
         margin-top: 1rem;
     }
     .card {
-        border-radius: 10px;
+        border-radius: 12px;
         padding: 20px;
-        background-color: #f9f9f9;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(145deg, #ffffff 0%, #f9f9f9 100%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
         margin-bottom: 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+        border-color: rgba(227, 25, 55, 0.1);
     }
     .metric-value {
         font-size: 2.2rem;
@@ -209,6 +216,63 @@ st.markdown("""
     hr {
         margin-top: 1rem;
         margin-bottom: 1rem;
+    }
+    .elegant-separator {
+        height: 3px;
+        background: linear-gradient(90deg, transparent 0%, #E31937 20%, #E31937 80%, transparent 100%);
+        border: none;
+        margin: 2rem 0;
+        opacity: 0.6;
+    }
+    .insights-panel {
+        background: linear-gradient(135deg, #E31937 0%, #C0392B 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin: 20px 0;
+        box-shadow: 0 6px 16px rgba(227, 25, 55, 0.25);
+    }
+    .insights-panel h3 {
+        margin-top: 0;
+        color: white;
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+    }
+    .insight-item {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        backdrop-filter: blur(10px);
+        border-left: 4px solid rgba(255, 255, 255, 0.5);
+    }
+    .footer {
+        background: linear-gradient(145deg, #2c3e50 0%, #34495e 100%);
+        color: #ecf0f1;
+        padding: 30px 20px;
+        border-radius: 12px;
+        margin-top: 40px;
+        text-align: center;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .footer a {
+        color: #E31937;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-weight: 500;
+    }
+    .footer a:hover {
+        color: #ff4757;
+        text-decoration: underline;
+    }
+    .footer-links {
+        margin: 15px 0;
+        font-size: 1.1rem;
+    }
+    .footer-info {
+        margin-top: 15px;
+        font-size: 0.9rem;
+        color: #95a5a6;
     }
     .download-btn {
         background-color: #E31937;
@@ -670,7 +734,7 @@ def auto_refresh_data():
 # --- Sidebar ---
 with st.sidebar:
     st.markdown("## Configuración")
-    st.markdown("---")
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Reddit Configuration
     st.markdown("### Datos de Reddit")
@@ -701,7 +765,7 @@ with st.sidebar:
         help="Time period for hot posts"
     )
     
-    st.markdown("---")
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Visualization Settings
     st.markdown("### Visualización")
@@ -743,7 +807,7 @@ with st.sidebar:
         wordcloud_neutral_cmap = "Greys"
         wordcloud_negative_cmap = color_theme.lower()
     
-    st.markdown("---")
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Auto-refresh settings
     st.markdown("### Actualización automática")
@@ -799,13 +863,13 @@ with st.sidebar:
         </p>
         """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Search/Analyze button - main action
     st.markdown("### Ready to Analyze?")
     analyze_button = st.button("🔍 Analyze Sentiment", type="primary", width='stretch')
 
-    st.markdown("---")
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Manual refresh button (only show if data has been loaded before)
     if 'data_loaded' in st.session_state and st.session_state['data_loaded']:
@@ -813,7 +877,7 @@ with st.sidebar:
     else:
         refresh_data = False
 
-    st.markdown("---")
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     st.markdown("#### About")
     st.markdown("This dashboard analyzes sentiment in Reddit posts about Tesla from the selected subreddit.")
     st.markdown("Configure the parameters above and click '🔍 Analyze Sentiment' to start.")
@@ -923,7 +987,90 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
     # Show trend insight
     if isinstance(sentiment_trend_info, dict):
         st.info(f"📊 Trend Insight: {sentiment_trend_info['description']}")
-    
+
+    # --- Key Insights Panel ---
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
+
+    # Calculate key insights
+    most_active_hour = df_comments.groupby('comment_hour').size().idxmax()
+    most_active_day = df_comments.groupby('comment_date').size().idxmax()
+    avg_comments_per_post = len(df_comments) / len(df_posts) if len(df_posts) > 0 else 0
+
+    # Find dominant sentiment
+    sentiment_counts = df_comments['sentiment_category'].value_counts()
+    dominant_sentiment = sentiment_counts.idxmax()
+    dominant_sentiment_pct = (sentiment_counts.max() / len(df_comments)) * 100
+
+    # Sentiment comparison
+    positive_pct = sentiment_summary['positive_pct']
+    negative_pct = sentiment_summary['negative_pct']
+    sentiment_balance = positive_pct - negative_pct
+
+    st.markdown("""
+    <div class="insights-panel">
+        <h3>🔍 Key Insights del Análisis</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("""
+        <div class="card" style="background: rgba(255, 255, 255, 0.95); border-left: 4px solid #E31937;">
+            <h4 style="color: #E31937; margin-top: 0;">💬 Engagement</h4>
+            <p style="font-size: 0.95rem; margin: 8px 0;">
+                <strong style="font-size: 1.8rem; display: block; margin: 10px 0;">{:.1f}</strong>
+                comentarios promedio por post
+            </p>
+            <p style="font-size: 0.85rem; color: #666; margin-top: 10px;">
+                Hora más activa: <strong>{}:00 UTC</strong>
+            </p>
+        </div>
+        """.format(avg_comments_per_post, most_active_hour), unsafe_allow_html=True)
+
+    with col2:
+        balance_color = "#1E8449" if sentiment_balance > 0 else ("#C0392B" if sentiment_balance < 0 else "#707B7C")
+        balance_icon = "📈" if sentiment_balance > 0 else ("📉" if sentiment_balance < 0 else "➡️")
+        balance_text = "más positivo" if sentiment_balance > 0 else ("más negativo" if sentiment_balance < 0 else "equilibrado")
+
+        st.markdown("""
+        <div class="card" style="background: rgba(255, 255, 255, 0.95); border-left: 4px solid {};">
+            <h4 style="color: {}; margin-top: 0;">{} Balance de Sentiment</h4>
+            <p style="font-size: 0.95rem; margin: 8px 0;">
+                <strong style="font-size: 1.8rem; display: block; margin: 10px 0; color: {};">{:+.1f}%</strong>
+                sentiment {}
+            </p>
+            <p style="font-size: 0.85rem; color: #666; margin-top: 10px;">
+                {:.1f}% positivo vs {:.1f}% negativo
+            </p>
+        </div>
+        """.format(
+            balance_color, balance_color, balance_icon, balance_color,
+            sentiment_balance, balance_text, positive_pct, negative_pct
+        ), unsafe_allow_html=True)
+
+    with col3:
+        dominant_color = "#1E8449" if dominant_sentiment == "Positive" else ("#C0392B" if dominant_sentiment == "Negative" else "#707B7C")
+        dominant_icon = "😊" if dominant_sentiment == "Positive" else ("😞" if dominant_sentiment == "Negative" else "😐")
+
+        st.markdown("""
+        <div class="card" style="background: rgba(255, 255, 255, 0.95); border-left: 4px solid {};">
+            <h4 style="color: {}; margin-top: 0;">{} Sentiment Dominante</h4>
+            <p style="font-size: 0.95rem; margin: 8px 0;">
+                <strong style="font-size: 1.8rem; display: block; margin: 10px 0; color: {};">{}</strong>
+                representa el {:.1f}% de comentarios
+            </p>
+            <p style="font-size: 0.85rem; color: #666; margin-top: 10px;">
+                Score promedio: <strong>{:.3f}</strong>
+            </p>
+        </div>
+        """.format(
+            dominant_color, dominant_color, dominant_icon, dominant_color,
+            dominant_sentiment, dominant_sentiment_pct, sentiment_summary['avg_compound']
+        ), unsafe_allow_html=True)
+
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
+
     # --- Visualization Tabs ---
     tabs = st.tabs(["Sentiment Distribution", "Temporal Analysis", "Top Posts", "Word Analysis", "Data Export & Insights"])
     
@@ -1212,7 +1359,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             else:
                 st.info("No negative comments to analyze")
     
-        st.markdown("---")
+        st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Word Frequency Analysis
         st.markdown("### Top Words by Sentiment Category")
@@ -1288,7 +1435,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                     )
                     st.plotly_chart(fig_neg_bar, width='stretch')
     
-        st.markdown("---")
+        st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Topic Modeling
         st.markdown("### Topic Modeling Analysis")
@@ -1367,7 +1514,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
         else:
             st.warning(sentiment_trend_info)
     
-        st.markdown("---")
+        st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Statistical Summary
         st.markdown("### Statistical Summary")
@@ -1422,7 +1569,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             })
             st.dataframe(activity_df, hide_index=True, width='stretch')
     
-        st.markdown("---")
+        st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Correlation Analysis
         st.markdown("### Correlation Analysis")
@@ -1488,7 +1635,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
             st.metric("Correlation Coefficient", f"{corr_engagement_sentiment:.3f}",
                      help="Pearson correlation between post engagement and sentiment (-1 to 1)")
     
-        st.markdown("---")
+        st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Data Export Section
         st.markdown("### Export Data")
@@ -1572,7 +1719,7 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 help="Download comprehensive analysis report in JSON format"
             )
     
-        st.markdown("---")
+        st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     
         # Raw Data Preview
         st.markdown("### Data Preview")
@@ -1609,16 +1756,38 @@ if analyze_button or refresh_data or ('data_loaded' in st.session_state and st.s
                 hide_index=True
             )
     
-    # --- Footer ---
-    st.markdown("---")
+    # --- Professional Footer ---
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
     st.markdown("""
-    <div style="text-align: center; color: #666;">
-        <p>Tesla Sentiment Dashboard | Updated: {}</p>
-        <p>Data source: Reddit r/{}</p>
+    <div class="footer">
+        <h3 style="margin-top: 0; color: #ecf0f1;">⚡ Tesla Sentiment Dashboard</h3>
+        <p style="font-size: 1rem; margin: 10px 0;">
+            Análisis de sentiment en tiempo real usando VADER (NLTK) y visualización avanzada con Plotly
+        </p>
+        <div class="footer-links">
+            <a href="https://github.com" target="_blank">📁 GitHub</a> •
+            <a href="https://linkedin.com" target="_blank">💼 LinkedIn</a> •
+            <a href="https://www.reddit.com/r/{}" target="_blank">🔗 r/{}</a>
+        </div>
+        <div class="footer-info">
+            <p style="margin: 5px 0;">
+                <strong>Última actualización:</strong> {} |
+                <strong>Versión:</strong> 1.0.0 |
+                <strong>Posts analizados:</strong> {}
+            </p>
+            <p style="margin: 5px 0; font-size: 0.85rem;">
+                Hecho con ❤️ usando Streamlit, PRAW, NLTK, y Plotly
+            </p>
+            <p style="margin: 5px 0; font-size: 0.8rem; color: #7f8c8d;">
+                © 2025 | Los datos provienen de Reddit y se analizan en tiempo real
+            </p>
+        </div>
     </div>
     """.format(
+        subreddit_name,
+        subreddit_name,
         st.session_state.get('last_refresh', datetime.now()).strftime("%Y-%m-%d %H:%M:%S UTC"),
-        subreddit_name
+        len(df_posts)
     ), unsafe_allow_html=True)
 
 else:
@@ -1663,7 +1832,7 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown('<hr class="elegant-separator">', unsafe_allow_html=True)
 
     # Instructions
     st.markdown("### Cómo empezar")
